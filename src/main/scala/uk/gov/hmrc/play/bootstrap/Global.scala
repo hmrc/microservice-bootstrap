@@ -47,7 +47,7 @@ trait MicroserviceFilters {
     RecoveryFilter)
 }
 
-abstract class DefaultMicroserviceGlobal
+abstract class VanillaMicroserviceGlobal
   extends GlobalSettings
   with MicroserviceFilters
   with GraphiteConfig
