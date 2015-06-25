@@ -52,8 +52,8 @@ abstract class VanillaMicroserviceGlobal
   with MicroserviceFilters
   with GraphiteConfig
   with AppName
-  with ErrorAuditingSettings
-  with JsonErrorHandling {
+  with JsonErrorHandling
+  with ErrorAuditingSettings {
 
   override def onStart(app: Application) {
     Logger.info(s"Starting microservice : $appName : in mode : ${app.mode}")
