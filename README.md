@@ -65,7 +65,7 @@ Add the following to your SBT build:
 ```scala
 resolvers += Resolver.bintrayRepo("hmrc", "releases")
 
-libraryDependencies += "uk.gov.hmrc" % "microservice-bootstrap" % "[INSERT-VERSION]"
+libraryDependencies += "uk.gov.hmrc" %% "microservice-bootstrap" % "[INSERT-VERSION]"
 ```
 
 ## License ##
