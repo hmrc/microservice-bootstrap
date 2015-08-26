@@ -37,6 +37,18 @@ You can also enable the plugin's admin servlet by adding this line to your `rout
 GET     /admin/metrics          com.kenshoo.play.metrics.MetricsController.metrics
 ```
 
+and configure the controller in your application conf file:
+
+```scala
+controllers {
+    com.kenshoo.play.metrics.MetricsController {
+        needsAuth = false
+        needsLogging = false
+        needsAuditing = false
+    }
+}
+```
+
 #### Publishing metrics to Graphite
 
 To enable Graphite publisher in your application, add a block like this to your application `conf` file:
