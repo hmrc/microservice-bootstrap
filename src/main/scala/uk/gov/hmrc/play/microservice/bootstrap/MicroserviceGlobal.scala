@@ -25,7 +25,6 @@ import uk.gov.hmrc.play.filters._
 import uk.gov.hmrc.play.graphite.GraphiteConfig
 import uk.gov.hmrc.play.http.logging.filters.LoggingFilter
 import uk.gov.hmrc.play.microservice.bootstrap.Routing.RemovingOfTrailingSlashes
-import uk.gov.hmrc.play.microservice.filters.MicroserviceAuthorisationFilter
 
 trait MicroserviceFilters {
 
@@ -35,15 +34,15 @@ trait MicroserviceFilters {
 
   def metricsFilter: MetricsFilter = MetricsFilter
   
-  def authFilter: MicroserviceAuthorisationFilter
+  def authFilter: Option[EssentialFilter]
 
   protected lazy val defaultMicroserviceFilters: Seq[EssentialFilter] = Seq(
-    metricsFilter,
-    microserviceAuditFilter,    
-    loggingFilter,
+    Some(metricsFilter),
+    Some(microserviceAuditFilter),
+    Some(loggingFilter),
     authFilter,
-    NoCacheFilter,
-    RecoveryFilter)
+    Some(NoCacheFilter),
+    Some(RecoveryFilter)).flatten
 
   def microserviceFilters: Seq[EssentialFilter] = defaultMicroserviceFilters
 
