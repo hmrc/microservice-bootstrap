@@ -20,14 +20,13 @@ import org.mockito.Mockito
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{Matchers, WordSpecLike}
-import play.api.mvc.RequestHeader
+import play.api.mvc.{EssentialFilter, RequestHeader}
 import play.api.test.FakeHeaders
 import play.api.{PlayException, Application}
 import uk.gov.hmrc.play.audit.EventTypes
 import uk.gov.hmrc.play.audit.filters.AuditFilter
 import uk.gov.hmrc.play.http.NotFoundException
 import uk.gov.hmrc.play.http.logging.filters.LoggingFilter
-import uk.gov.hmrc.play.microservice.filters.MicroserviceAuthorisationFilter
 import Mockito._
 
 class DefaultMicroserviceGlobalSpec extends WordSpecLike with Matchers with ScalaFutures with MockitoSugar {
@@ -48,7 +47,7 @@ class DefaultMicroserviceGlobalSpec extends WordSpecLike with Matchers with Scal
 
     override def microserviceAuditFilter: AuditFilter = ???
 
-    override def authFilter: MicroserviceAuthorisationFilter = ???
+    override def authFilter: Option[EssentialFilter] = ???
   }
 
   "in a case of an application exception, the framework" should {
