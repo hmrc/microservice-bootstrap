@@ -24,7 +24,7 @@ import play.api.mvc.Result
 import play.api.libs.json.{JsError, JsSuccess, Reads, JsValue}
 import scala.util.{Failure, Success, Try}
 
-trait Utf8MineTypes {
+trait Utf8MimeTypes {
   self : Controller =>
 
   override def JSON(implicit codec: Codec) = s"${MimeTypes.JSON};charset=utf-8"
@@ -32,7 +32,7 @@ trait Utf8MineTypes {
   override def HTML(implicit codec: Codec) = s"${MimeTypes.HTML};charset=utf-8"
 }
 
-trait BaseController extends Controller with Utf8MineTypes {
+trait BaseController extends Controller with Utf8MimeTypes {
 
   implicit def hc(implicit rh: RequestHeader) = HeaderCarrier.fromHeadersAndSession(rh.headers)
 
