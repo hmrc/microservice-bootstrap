@@ -20,7 +20,7 @@ import org.scalatest.{Matchers, WordSpecLike}
 import play.api.mvc.{Codec, Controller}
 
 
-class Utf8MineTypesSpec extends WordSpecLike with Matchers {
+class Utf8MimeTypesSpec extends WordSpecLike with Matchers {
 
   implicit val codec = Codec.utf_8
 
@@ -36,7 +36,7 @@ class Utf8MineTypesSpec extends WordSpecLike with Matchers {
 
     "have application json with utf8 character set" in {
 
-      val controller = new Controller with Utf8MineTypes {}
+      val controller = new Controller with Utf8MimeTypes {}
       val applicationJsonWithUtf8Charset = controller.JSON
 
       applicationJsonWithUtf8Charset shouldBe "application/json;charset=utf-8"
@@ -44,7 +44,7 @@ class Utf8MineTypesSpec extends WordSpecLike with Matchers {
 
     "have text html with utf8 character set" in {
 
-      val controller = new Controller with Utf8MineTypes {}
+      val controller = new Controller with Utf8MimeTypes {}
       val textHtmlWithUtf8Charset = controller.HTML
 
       textHtmlWithUtf8Charset shouldBe "text/html;charset=utf-8"
