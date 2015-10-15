@@ -18,7 +18,7 @@ package uk.gov.hmrc.play.microservice.controller
 
 import play.api.mvc._
 import play.api.http.MimeTypes
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import scala.concurrent.Future
 import play.api.mvc.Result
 import play.api.libs.json.{JsError, JsSuccess, Reads, JsValue}
