@@ -45,7 +45,6 @@ trait MicroserviceFilters {
     Some(RecoveryFilter)).flatten
 
   def microserviceFilters: Seq[EssentialFilter] = defaultMicroserviceFilters
-
 }
 
 abstract class DefaultMicroserviceGlobal

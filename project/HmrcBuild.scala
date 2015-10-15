@@ -3,14 +3,12 @@ import sbt._
 
 object HmrcBuild extends Build {
 
-  import uk.gov.hmrc.DefaultBuildSettings._
   import uk.gov.hmrc.SbtAutoBuildPlugin
   import uk.gov.hmrc.versioning.SbtGitVersioning
 
   val appName = "microservice-bootstrap"
 
   val appDependencies = Dependencies.compile ++ Dependencies.test
-
 
   lazy val library = Project(appName, file("."))
     .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning)
@@ -34,7 +32,8 @@ object Dependencies {
 
   val compile = Seq(
     filters,
-    "uk.gov.hmrc" %% "http-verbs" % "2.0.0",
+    "uk.gov.hmrc" %% "http-verbs" % "3.0.0",
+    "uk.gov.hmrc" %% "play-auditing" % "0.2.0",
     "uk.gov.hmrc" %% "play-filters" % "2.0.0",
     "uk.gov.hmrc" %% "play-graphite" % "2.0.0",
     "com.typesafe.play" %% "play" % PlayVersion.current,
