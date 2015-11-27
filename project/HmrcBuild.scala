@@ -32,7 +32,7 @@ object Dependencies {
 
   val compile = Seq(
     filters,
-    "uk.gov.hmrc" %% "play-filters" % "4.0.0",
+    "uk.gov.hmrc" %% "play-filters" % "4.1.0",
     "uk.gov.hmrc" %% "play-graphite" % "2.0.0",
     "com.typesafe.play" %% "play" % PlayVersion.current,
     "com.kenshoo" %% "metrics-play" % "2.3.0_0.1.8"
