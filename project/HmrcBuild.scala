@@ -27,19 +27,18 @@ object HmrcBuild extends Build {
 
 object Dependencies {
 
-  import play.PlayImport._
-  import play.core.PlayVersion
+  import play.sbt.PlayImport._
 
   val compile = Seq(
     filters,
-    "uk.gov.hmrc" %% "play-filters-25" % "4.6.0-8-g016ddba",
+    "uk.gov.hmrc" %% "play-filters-25" % "d57cc4ec58b94b7c8024258ea255f7b85255ed45",
     "uk.gov.hmrc" %% "play-graphite" % "2.0.0",
-    "com.typesafe.play" %% "play" % PlayVersion.current,
+    "com.typesafe.play" %% "play" % "2.5.3",
     "com.kenshoo" %% "metrics-play" % "2.3.0_0.1.8"
   )
 
   val test = Seq(
-    "com.typesafe.play" %% "play-test" % PlayVersion.current % "test",
+    "com.typesafe.play" %% "play-test" % "2.5.3" % "test",
     "org.scalatest" %% "scalatest" % "2.2.4" % "test",
     "org.pegdown" % "pegdown" % "1.5.0" % "test",
     "org.mockito" % "mockito-all" % "1.9.5" % "test"
