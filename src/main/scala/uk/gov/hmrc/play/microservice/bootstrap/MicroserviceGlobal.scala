@@ -39,8 +39,8 @@ trait MicroserviceFilters {
 
   def microserviceAuditFilter: AuditFilter
 
-  def metricsFilter: MetricsFilter = MetricsFilter
-  
+  def metricsFilter: MetricsFilter = Play.current.injector.instanceOf[MetricsFilter]
+
   def authFilter: Option[EssentialFilter]
 
   protected lazy val defaultMicroserviceFilters: Seq[EssentialFilter] = Seq(
@@ -59,7 +59,7 @@ abstract class DefaultMicroserviceGlobal
   with MicroserviceFilters
   with GraphiteConfig
   with RemovingOfTrailingSlashes
-  with JsonErrorHandling 
+  with JsonErrorHandling
   with ErrorAuditingSettings {
 
   lazy val appName = Play.current.configuration.getString("appName").getOrElse("APP NAME NOT SET")

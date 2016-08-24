@@ -16,17 +16,23 @@
 
 package uk.gov.hmrc.play.microservice.bootstrap
 
+import com.kenshoo.play.metrics.PlayModule
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{Matchers, WordSpecLike}
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.EssentialFilter
+import play.api.test.FakeApplication
 import uk.gov.hmrc.play.audit.filters.AuditFilter
 import uk.gov.hmrc.play.http.logging.filters.LoggingFilter
+import play.api.test.Helpers._
 
 class MicroserviceFiltersSpec extends WordSpecLike with Matchers with MockitoSugar {
 
+  val config: Map[String, _] = Map("play.modules.enabled" -> Seq("com.kenshoo.play.metrics.PlayModule"))
+
   "MicroserviceFilters" should {
 
-    "include authFilter is defined" in {
+    "include authFilter is defined" in running(new GuiceApplicationBuilder().bindings(new PlayModule).build()) {
 
       val filters = new MicroserviceFilters {
         override def loggingFilter: LoggingFilter = mock[LoggingFilter]
@@ -38,7 +44,7 @@ class MicroserviceFiltersSpec extends WordSpecLike with Matchers with MockitoSug
 
     }
 
-    "not include authFilter if not defined" in {
+    "not include authFilter if not defined" in running(new GuiceApplicationBuilder().bindings(new PlayModule).build()) {
 
       val filters = new MicroserviceFilters {
         override def loggingFilter: LoggingFilter = mock[LoggingFilter]
