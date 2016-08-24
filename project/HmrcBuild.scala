@@ -18,7 +18,8 @@ object HmrcBuild extends Build {
       crossScalaVersions := Seq("2.11.7"),
       resolvers := Seq(
         Resolver.bintrayRepo("hmrc", "releases"),
-        Resolver.typesafeRepo("releases")
+        Resolver.typesafeRepo("releases"),
+        Resolver.jcenterRepo
       )
     )
     .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
@@ -34,7 +35,7 @@ object Dependencies {
     "uk.gov.hmrc" %% "play-filters-25" % "0.2.0",
     "uk.gov.hmrc" %% "play-graphite-25" % "0.2.0",
     "com.typesafe.play" %% "play" % "2.5.2",
-    "com.kenshoo" %% "metrics-play" % "2.4.0_0.4.1"
+    "de.threedimensions" %% "metrics-play" % "2.5.13"
   )
 
   val test = Seq(
