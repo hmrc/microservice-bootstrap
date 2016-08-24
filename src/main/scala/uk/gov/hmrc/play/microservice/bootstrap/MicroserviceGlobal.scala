@@ -17,7 +17,7 @@
 package uk.gov.hmrc.play.microservice.bootstrap
 
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
+import akka.stream.{ActorMaterializer, Materializer}
 import com.kenshoo.play.metrics.MetricsFilter
 import play.api._
 import play.api.mvc._
@@ -28,12 +28,18 @@ import uk.gov.hmrc.play.graphite.GraphiteConfig
 import uk.gov.hmrc.play.http.logging.filters.LoggingFilter
 import uk.gov.hmrc.play.microservice.bootstrap.Routing.RemovingOfTrailingSlashes
 
+trait Materializers {
+  implicit val system = ActorSystem("temp")
+  implicit val materializer = ActorMaterializer()
+}
 
-trait MicroserviceFilters {
+trait MicroserviceFilterSupport extends Filter with Materializers {
+  override implicit def mat: Materializer = materializer
+}
+
+trait MicroserviceFilters extends Materializers {
 
   import play.api.libs.concurrent.Execution.Implicits._
-	implicit val system = ActorSystem("temp")
-	implicit val mat = ActorMaterializer()
 
   def loggingFilter: LoggingFilter
 
