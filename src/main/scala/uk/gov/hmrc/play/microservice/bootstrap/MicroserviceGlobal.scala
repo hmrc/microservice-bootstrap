@@ -64,6 +64,7 @@ abstract class DefaultMicroserviceGlobal
   extends GlobalSettings
   with MicroserviceFilters
   with GraphiteConfig
+  with RemovingOfTrailingSlashes
   with JsonErrorHandling
   with ErrorAuditingSettings {
 

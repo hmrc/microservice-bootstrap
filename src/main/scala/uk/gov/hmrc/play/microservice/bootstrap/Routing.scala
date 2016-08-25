@@ -34,14 +34,3 @@ object Routing {
     }
   }
 }
-
-class TrailingSlashRemovingRequestHandler @Inject()(router: Router,
-                                            errorHandler: HttpErrorHandler,
-                                            configuration: HttpConfiguration,
-                                            filters: EssentialFilter*)
-  extends DefaultHttpRequestHandler(router, errorHandler, configuration, filters:_*)
-    with RemovingOfTrailingSlashes {
-
-  override def routeRequest(request: RequestHeader): Option[Handler] = onRouteRequest(request)
-
-}
