@@ -35,7 +35,6 @@ object Routing {
   }
 }
 
-@Singleton
 class TrailingSlashRemovingRequestHandler @Inject()(router: Router,
                                             errorHandler: HttpErrorHandler,
                                             configuration: HttpConfiguration,
