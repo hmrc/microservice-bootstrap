@@ -16,8 +16,13 @@
 
 package uk.gov.hmrc.play.microservice.bootstrap
 
+import javax.inject.{Inject, Singleton}
+
 import play.api.GlobalSettings
-import play.api.mvc.{Handler, RequestHeader}
+import play.api.http.{DefaultHttpRequestHandler, HttpConfiguration, HttpErrorHandler}
+import play.api.mvc.{EssentialFilter, Handler, RequestHeader}
+import play.api.routing.Router
+import uk.gov.hmrc.play.microservice.bootstrap.Routing.RemovingOfTrailingSlashes
 
 object Routing {
 
@@ -28,4 +33,16 @@ object Routing {
       Some(request.path).filter(_.endsWith("/")).flatMap(p => super.onRouteRequest(request.copy(path = p.dropRight(1))))
     }
   }
+}
+
+@Singleton
+class TrailingSlashRemovingRequestHandler @Inject()(router: Router,
+                                            errorHandler: HttpErrorHandler,
+                                            configuration: HttpConfiguration,
+                                            filters: EssentialFilter*)
+  extends DefaultHttpRequestHandler(router, errorHandler, configuration, filters:_*)
+    with RemovingOfTrailingSlashes {
+
+  override def routeRequest(request: RequestHeader): Option[Handler] = onRouteRequest(request)
+
 }
