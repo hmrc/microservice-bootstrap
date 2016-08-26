@@ -28,15 +28,6 @@ import uk.gov.hmrc.play.graphite.GraphiteConfig
 import uk.gov.hmrc.play.http.logging.filters.LoggingFilter
 import uk.gov.hmrc.play.microservice.bootstrap.Routing.RemovingOfTrailingSlashes
 
-trait Materializers {
-  implicit val system = ActorSystem("temp")
-  implicit val materializer = ActorMaterializer()
-}
-
-trait MicroserviceFilterSupport extends Filter with Materializers {
-  override implicit def mat: Materializer = materializer
-}
-
 trait MicroserviceFilters extends Materializers {
 
   import play.api.libs.concurrent.Execution.Implicits._
