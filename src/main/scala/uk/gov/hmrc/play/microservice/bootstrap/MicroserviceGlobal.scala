@@ -54,8 +54,8 @@ trait MicroserviceFilters extends Materializers {
     Some(microserviceAuditFilter),
     Some(loggingFilter),
     authFilter,
-    Some(new NoCacheFilter),
-    Some(new RecoveryFilter)).flatten
+    Some(NoCacheFilter),
+    Some(RecoveryFilter)).flatten
 
   def microserviceFilters: Seq[EssentialFilter] = defaultMicroserviceFilters
 }
