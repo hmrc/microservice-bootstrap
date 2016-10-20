@@ -32,7 +32,7 @@ class MicroserviceFiltersSpec extends WordSpecLike with Matchers with MockitoSug
 
   "MicroserviceFilters" should {
 
-    "include authFilter is defined" in running(new GuiceApplicationBuilder().bindings(new PlayModule).build()) {
+    "include authFilter if defined" in running(new GuiceApplicationBuilder().bindings(new PlayModule).build()) {
 
       val filters = new MicroserviceFilters {
         override def loggingFilter: LoggingFilter = mock[LoggingFilter]
