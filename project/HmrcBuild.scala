@@ -1,3 +1,4 @@
+import play.core.PlayVersion
 import sbt.Keys._
 import sbt._
 
@@ -18,7 +19,8 @@ object HmrcBuild extends Build {
       crossScalaVersions := Seq("2.11.7"),
       resolvers := Seq(
         Resolver.bintrayRepo("hmrc", "releases"),
-        Resolver.typesafeRepo("releases")
+        Resolver.typesafeRepo("releases"),
+        Resolver.jcenterRepo
       )
     )
     .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
@@ -27,22 +29,22 @@ object HmrcBuild extends Build {
 
 object Dependencies {
 
-  import play.PlayImport._
-  import play.core.PlayVersion
+  import play.sbt.PlayImport._
 
   val compile = Seq(
     filters,
-    "uk.gov.hmrc" %% "play-filters" % "4.8.0",
-    "uk.gov.hmrc" %% "play-graphite" % "2.0.0",
-    "com.typesafe.play" %% "play" % PlayVersion.current,
-    "com.kenshoo" %% "metrics-play" % "2.3.0_0.1.8"
+    "uk.gov.hmrc" %% "play-filters" % "5.1.0",
+    "uk.gov.hmrc" %% "play-graphite" % "3.0.0",
+    "com.typesafe.play" %% "play" % "2.5.8",
+    "de.threedimensions" %% "metrics-play" % "2.5.13"
   )
 
   val test = Seq(
     "com.typesafe.play" %% "play-test" % PlayVersion.current % "test",
     "org.scalatest" %% "scalatest" % "2.2.4" % "test",
     "org.pegdown" % "pegdown" % "1.5.0" % "test",
-    "org.mockito" % "mockito-all" % "1.9.5" % "test"
+    "org.mockito" % "mockito-all" % "1.9.5" % "test",
+    "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % "test"
   )
 
 }

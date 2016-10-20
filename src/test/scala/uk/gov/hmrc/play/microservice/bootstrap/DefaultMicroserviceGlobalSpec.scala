@@ -22,14 +22,15 @@ import org.scalatest.mock.MockitoSugar
 import org.scalatest.{Matchers, WordSpecLike}
 import play.api.mvc.{EssentialFilter, RequestHeader}
 import play.api.test.FakeHeaders
-import play.api.{PlayException, Application}
+import play.api.{Application, PlayException}
 import uk.gov.hmrc.play.audit.EventTypes
 import uk.gov.hmrc.play.audit.filters.AuditFilter
 import uk.gov.hmrc.play.http.NotFoundException
 import uk.gov.hmrc.play.http.logging.filters.LoggingFilter
 import Mockito._
+import org.scalatestplus.play.OneAppPerSuite
 
-class DefaultMicroserviceGlobalSpec extends WordSpecLike with Matchers with ScalaFutures with MockitoSugar {
+class DefaultMicroserviceGlobalSpec extends WordSpecLike with Matchers with ScalaFutures with MockitoSugar with OneAppPerSuite {
 
   val requestHeader = mock[RequestHeader]
 

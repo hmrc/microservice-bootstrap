@@ -27,7 +27,7 @@ import scala.util.{Failure, Success, Try}
 trait Utf8MimeTypes {
   self : Controller =>
 
-  override def JSON(implicit codec: Codec) = s"${MimeTypes.JSON};charset=utf-8"
+  override val JSON = s"${MimeTypes.JSON};charset=utf-8"
 
   override def HTML(implicit codec: Codec) = s"${MimeTypes.HTML};charset=utf-8"
 }

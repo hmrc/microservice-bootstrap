@@ -16,8 +16,13 @@
 
 package uk.gov.hmrc.play.microservice.bootstrap
 
+import javax.inject.{Inject, Singleton}
+
 import play.api.GlobalSettings
-import play.api.mvc.{Handler, RequestHeader}
+import play.api.http.{DefaultHttpRequestHandler, HttpConfiguration, HttpErrorHandler}
+import play.api.mvc.{EssentialFilter, Handler, RequestHeader}
+import play.api.routing.Router
+import uk.gov.hmrc.play.microservice.bootstrap.Routing.RemovingOfTrailingSlashes
 
 object Routing {
 
