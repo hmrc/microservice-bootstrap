@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.graphite.GraphiteConfig
 import uk.gov.hmrc.play.http.logging.filters.LoggingFilter
 import uk.gov.hmrc.play.microservice.bootstrap.Routing.RemovingOfTrailingSlashes
 
-trait MicroserviceFilters extends Materializers {
+trait MicroserviceFilters extends MicroserviceFilterSupport {
 
   def loggingFilter: LoggingFilter
 
