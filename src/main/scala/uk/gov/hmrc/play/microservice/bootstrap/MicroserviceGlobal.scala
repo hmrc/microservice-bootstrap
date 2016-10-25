@@ -17,6 +17,7 @@
 package uk.gov.hmrc.play.microservice.bootstrap
 
 import com.kenshoo.play.metrics.MetricsFilter
+import org.slf4j.MDC
 import play.api._
 import play.api.mvc._
 import uk.gov.hmrc.play.audit.filters.AuditFilter
@@ -56,9 +57,12 @@ abstract class DefaultMicroserviceGlobal
   with ErrorAuditingSettings {
 
   lazy val appName = Play.current.configuration.getString("appName").getOrElse("APP NAME NOT SET")
+  lazy val loggerDateFormat: Option[String] = Play.current.configuration.getString("logger.json.dateformat")
 
   override def onStart(app: Application) {
     Logger.info(s"Starting microservice : $appName : in mode : ${app.mode}")
+    MDC.put("appName", appName)
+    loggerDateFormat.foreach(str => MDC.put("logger.json.dateformat", str))
     super.onStart(app)
   }
 
