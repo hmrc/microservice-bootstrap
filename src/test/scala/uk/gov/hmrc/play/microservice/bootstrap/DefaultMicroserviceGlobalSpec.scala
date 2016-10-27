@@ -55,7 +55,7 @@ class DefaultMicroserviceGlobalSpec extends WordSpecLike with Matchers with Scal
 
     "send an event to DataStream and return 404 status code for a NotFoundException" in {
       val restGlobal = new TestRestGlobal()
-      val resultF = restGlobal.onError(requestHeader, new PlayException("", "", new NotFoundException("test"))).futureValue
+      val resultF = restGlobal.onError(requestHeader, new NotFoundException("test")).futureValue
 
       resultF.header.status shouldBe 404
       restGlobal.auditConnector.recordedEvent shouldNot be(None)
