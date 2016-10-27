@@ -16,14 +16,14 @@
 
 package uk.gov.hmrc.play.microservice.bootstrap
 
-import scala.concurrent.Future
-
-import play.api.mvc.RequestHeader
-import play.api.libs.json.Json
 import play.api.GlobalSettings
 import play.api.http.Status._
+import play.api.libs.json.Json
+import play.api.mvc.RequestHeader
 import play.api.mvc.Results._
-import uk.gov.hmrc.play.http._
+import uk.gov.hmrc.play.http.{HttpException, Upstream4xxResponse, Upstream5xxResponse}
+
+import scala.concurrent.Future
 
 case class ErrorResponse(statusCode: Int, message: String, xStatusCode: Option[String] = None, requested: Option[String] = None)
 
@@ -33,7 +33,7 @@ trait JsonErrorHandling extends GlobalSettings {
 
   override def onError(request: RequestHeader, ex: Throwable) = {
     Future.successful {
-      val (code, message) = ex.getCause match {
+      val (code, message) = ex match {
         case e: HttpException => (e.responseCode, e.getMessage)
 
         case e: Upstream4xxResponse => (e.reportAs, e.getMessage)
