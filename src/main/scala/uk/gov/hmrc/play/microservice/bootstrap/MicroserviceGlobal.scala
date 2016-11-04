@@ -37,7 +37,7 @@ trait MicroserviceFilters extends MicroserviceFilterSupport {
 
   def authFilter: Option[EssentialFilter]
 
-  protected lazy val defaultMicroserviceFilters: Seq[EssentialFilter] = Seq(
+  protected def defaultMicroserviceFilters: Seq[EssentialFilter] = Seq(
     Some(metricsFilter),
     Some(microserviceAuditFilter),
     Some(loggingFilter),
