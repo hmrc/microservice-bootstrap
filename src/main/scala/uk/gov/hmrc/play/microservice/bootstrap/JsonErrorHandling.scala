@@ -38,15 +38,16 @@ trait JsonErrorHandling extends GlobalSettings {
   }
 
   private def logError(request: RequestHeader, ex: Throwable): Unit = {
+    def formatPlayExceptionId: Throwable => String = {
+      case p: PlayException => "@" + p.id + " - "
+      case _ => ""
+    }
+
     try {
       Logger.error(
         """
-          |
           |! %sInternal server error, for (%s) [%s] ->
-          | """.stripMargin.format(ex match {
-          case p: PlayException => "@" + p.id + " - "
-          case _ => ""
-        }, request.method, request.uri),
+          | """.stripMargin.format(formatPlayExceptionId(ex), request.method, request.uri),
         ex
       )
     } catch {

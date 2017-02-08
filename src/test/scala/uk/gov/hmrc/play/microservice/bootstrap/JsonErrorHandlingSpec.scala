@@ -17,11 +17,11 @@
 package uk.gov.hmrc.play.microservice.bootstrap
 
 import ch.qos.logback.classic.Level
+import org.mockito.Matchers.{eq => eqTo}
+import org.mockito.Mockito._
+import org.scalatest.LoneElement
 import org.scalatest.concurrent.{Eventually, ScalaFutures}
 import org.scalatest.mock.MockitoSugar
-import org.mockito.Matchers.{eq => eqTo, _}
-import org.mockito.Mockito._
-import org.scalatest.{LoneElement, Matchers, WordSpecLike}
 import play.api.mvc.RequestHeader
 import play.api.{GlobalSettings, Logger, UnexpectedException}
 import uk.gov.hmrc.play.http.{BadRequestException, NotFoundException, UnauthorizedException}
