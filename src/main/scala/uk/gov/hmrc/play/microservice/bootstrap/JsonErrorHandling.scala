@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.play.microservice.bootstrap
 
-import play.api.{DefaultGlobal, GlobalSettings, Logger, PlayException}
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.mvc.RequestHeader
 import play.api.mvc.Results._
+import play.api.{DefaultGlobal, GlobalSettings, Logger, PlayException}
 import uk.gov.hmrc.play.http.{HttpException, Upstream4xxResponse, Upstream5xxResponse}
 
 import scala.concurrent.Future
@@ -34,36 +34,32 @@ trait JsonErrorHandling extends GlobalSettings {
 
   override def onError(request: RequestHeader, ex: Throwable) = {
     logError(request, ex)
-    Future.successful(resolveError(request, ex))
+    Future.successful(resolveError(ex))
   }
 
   private def logError(request: RequestHeader, ex: Throwable): Unit = {
     def formatPlayExceptionId: Throwable => String = {
       case p: PlayException => "@" + p.id + " - "
-      case _ => ""
+      case _                => ""
     }
 
     try {
-      Logger.error(
-        """
-          |! %sInternal server error, for (%s) [%s] ->
-          | """.stripMargin.format(formatPlayExceptionId(ex), request.method, request.uri),
-        ex
-      )
+      val message = s"! ${formatPlayExceptionId(ex)}Internal server error, for (${request.method}) [${request.uri}] -> "
+      Logger.error(message, ex)
     } catch {
       case NonFatal(e) => DefaultGlobal.onError(request, e)
     }
   }
 
-  private def resolveError(rh: RequestHeader, ex: Throwable) = {
-    val (code, message) = ex match {
-      case e: HttpException => (e.responseCode, e.getMessage)
-      case e: Upstream4xxResponse => (e.reportAs, e.getMessage)
-      case e: Upstream5xxResponse => (e.reportAs, e.getMessage)
-      case e: Throwable => (INTERNAL_SERVER_ERROR, e.getMessage)
+  private def resolveError(ex: Throwable) = {
+    val errorResponse = ex match {
+      case e: HttpException       => ErrorResponse(e.responseCode, e.getMessage)
+      case e: Upstream4xxResponse => ErrorResponse(e.reportAs, e.getMessage)
+      case e: Upstream5xxResponse => ErrorResponse(e.reportAs, e.getMessage)
+      case e: Throwable           => ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage)
     }
 
-    new Status(code)(Json.toJson(ErrorResponse(code, message)))
+    new Status(errorResponse.statusCode)(Json.toJson(errorResponse))
   }
 
   override def onHandlerNotFound(request: RequestHeader) = {

@@ -17,7 +17,6 @@
 package uk.gov.hmrc.play.microservice.bootstrap
 
 import ch.qos.logback.classic.Level
-import org.mockito.Matchers.{eq => eqTo}
 import org.mockito.Mockito._
 import org.scalatest.LoneElement
 import org.scalatest.concurrent.{Eventually, ScalaFutures}
@@ -29,61 +28,71 @@ import uk.gov.hmrc.play.test.{LogCapturing, UnitSpec}
 
 class JsonErrorHandlingSpec extends UnitSpec with ScalaFutures with MockitoSugar with LogCapturing with LoneElement with Eventually {
 
-  val jsh = new GlobalSettings with JsonErrorHandling {}
-
-  val requestHeader = mock[RequestHeader]
-
   "error handling in onError function" should {
 
-    "convert a NotFoundException to NotFound response" in {
+    "convert a NotFoundException to NotFound response" in new Setup {
       val resultF = jsh.onError(requestHeader, new NotFoundException("test")).futureValue
       resultF.header.status shouldBe 404
     }
 
-    "convert a BadRequestException to NotFound response" in {
+    "convert a BadRequestException to NotFound response" in new Setup {
       val resultF = jsh.onError(requestHeader, new BadRequestException("bad request")).futureValue
       resultF.header.status shouldBe 400
     }
 
-    "convert an UnauthorizedException to Unauthorized response" in {
+    "convert an UnauthorizedException to Unauthorized response" in new Setup {
       val resultF = jsh.onError(requestHeader, new UnauthorizedException("unauthorized")).futureValue
       resultF.header.status shouldBe 401
     }
 
-    "convert an Exception to InternalServerError" in {
+    "convert an Exception to InternalServerError" in new Setup {
       val resultF = jsh.onError(requestHeader, new Exception("any application exception")).futureValue
       resultF.header.status shouldBe 500
     }
 
-    "log an error for a PlayException" in {
-      withCaptureOfLoggingFrom(Logger) { logEvents =>
-        val method = "some-method"
-        val uri = "some-uri"
-        when(requestHeader.method).thenReturn(method)
-        when(requestHeader.uri).thenReturn(uri)
+    "log an error for a PlayException" in new Setup {
+      when(requestHeader.method).thenReturn(method)
+      when(requestHeader.uri).thenReturn(uri)
 
+      withCaptureOfLoggingFrom(Logger) { logEvents =>
         jsh.onError(requestHeader, UnexpectedException(Some("any application exception"))).futureValue
 
+        verify(requestHeader).method
+        verify(requestHeader).uri
+        verifyNoMoreInteractions(requestHeader)
+
         eventually {
-          val message = logEvents.filter(_.getLevel == Level.ERROR).loneElement.getMessage
-          message should include regex s"! @[a-zA-Z0-9]+ - Internal server error, for \\($method\\) \\[$uri\\] ->".r
+          val event = logEvents.loneElement
+          event.getLevel shouldBe Level.ERROR
+          event.getMessage should fullyMatch regex s"! @[a-zA-Z0-9]+ - Internal server error, for \\($method\\) \\[$uri\\] -> ".r
         }
       }
     }
 
-    "log an error" in {
-      withCaptureOfLoggingFrom(Logger) { logEvents =>
-        val method = "some-method"
-        val uri = "some-uri"
-        when(requestHeader.method).thenReturn(method)
-        when(requestHeader.uri).thenReturn(uri)
+    "log an error" in new Setup {
+      when(requestHeader.method).thenReturn(method)
+      when(requestHeader.uri).thenReturn(uri)
 
+      withCaptureOfLoggingFrom(Logger) { logEvents =>
         jsh.onError(requestHeader, new Exception("any application exception")).futureValue
 
+        verify(requestHeader).method
+        verify(requestHeader).uri
+        verifyNoMoreInteractions(requestHeader)
+
         eventually {
-          logEvents.filter(_.getLevel == Level.ERROR).loneElement.getMessage should include(s"! Internal server error, for ($method) [$uri] ->")
+          val event = logEvents.loneElement
+          event.getLevel shouldBe Level.ERROR
+          event.getMessage shouldBe s"! Internal server error, for ($method) [$uri] -> "
         }
       }
+    }
+
+    sealed trait Setup {
+      val method = "some-method"
+      val uri = "some-uri"
+      val requestHeader = mock[RequestHeader]
+      val jsh = new GlobalSettings with JsonErrorHandling {}
     }
   }
 }
