@@ -22,7 +22,7 @@ import org.scalatest.LoneElement
 import org.scalatest.concurrent.{Eventually, ScalaFutures}
 import org.scalatest.mock.MockitoSugar
 import play.api.mvc.RequestHeader
-import play.api.{GlobalSettings, Logger, UnexpectedException}
+import play.api.{GlobalSettings, Logger}
 import uk.gov.hmrc.play.http.{BadRequestException, NotFoundException, UnauthorizedException}
 import uk.gov.hmrc.play.test.{LogCapturing, UnitSpec}
 
@@ -50,26 +50,7 @@ class JsonErrorHandlingSpec extends UnitSpec with ScalaFutures with MockitoSugar
       resultF.header.status shouldBe 500
     }
 
-    "log an error for a PlayException" in new Setup {
-      when(requestHeader.method).thenReturn(method)
-      when(requestHeader.uri).thenReturn(uri)
-
-      withCaptureOfLoggingFrom(Logger) { logEvents =>
-        jsh.onError(requestHeader, UnexpectedException(Some("any application exception"))).futureValue
-
-        verify(requestHeader).method
-        verify(requestHeader).uri
-        verifyNoMoreInteractions(requestHeader)
-
-        eventually {
-          val event = logEvents.loneElement
-          event.getLevel shouldBe Level.ERROR
-          event.getMessage should fullyMatch regex s"! @[a-zA-Z0-9]+ - Internal server error, for \\($method\\) \\[$uri\\] -> ".r
-        }
-      }
-    }
-
-    "log an error" in new Setup {
+    "log one error message for each exception" in new Setup {
       when(requestHeader.method).thenReturn(method)
       when(requestHeader.uri).thenReturn(uri)
 

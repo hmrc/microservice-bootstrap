@@ -20,7 +20,7 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.mvc.RequestHeader
 import play.api.mvc.Results._
-import play.api.{DefaultGlobal, GlobalSettings, Logger, PlayException}
+import play.api.{DefaultGlobal, GlobalSettings, Logger}
 import uk.gov.hmrc.play.http.{HttpException, Upstream4xxResponse, Upstream5xxResponse}
 
 import scala.concurrent.Future
@@ -37,19 +37,13 @@ trait JsonErrorHandling extends GlobalSettings {
     Future.successful(resolveError(ex))
   }
 
-  private def logError(request: RequestHeader, ex: Throwable): Unit = {
-    def formatPlayExceptionId: Throwable => String = {
-      case p: PlayException => "@" + p.id + " - "
-      case _                => ""
-    }
-
+  private def logError(request: RequestHeader, ex: Throwable): Unit =
     try {
-      val message = s"! ${formatPlayExceptionId(ex)}Internal server error, for (${request.method}) [${request.uri}] -> "
+      val message = s"! Internal server error, for (${request.method}) [${request.uri}] -> "
       Logger.error(message, ex)
     } catch {
       case NonFatal(e) => DefaultGlobal.onError(request, e)
     }
-  }
 
   private def resolveError(ex: Throwable) = {
     val errorResponse = ex match {
