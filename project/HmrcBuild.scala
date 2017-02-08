@@ -45,7 +45,8 @@ object Dependencies {
     "org.scalatest" %% "scalatest" % "2.2.4" % "test",
     "org.pegdown" % "pegdown" % "1.5.0" % "test",
     "org.mockito" % "mockito-all" % "1.9.5" % "test",
-    "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % "test"
+    "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % "test",
+    "uk.gov.hmrc" %% "hmrctest" % "2.2.0" % "test"
   )
 
 }
