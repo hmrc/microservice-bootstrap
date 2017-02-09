@@ -32,13 +32,9 @@ trait JsonErrorHandling extends GlobalSettings {
   implicit val erFormats = Json.format[ErrorResponse]
 
   override def onError(request: RequestHeader, ex: Throwable) = {
-    logError(request, ex)
-    Future.successful(resolveError(ex))
-  }
-
-  private def logError(request: RequestHeader, ex: Throwable): Unit = {
     val message = s"! Internal server error, for (${request.method}) [${request.uri}] -> "
     Logger.error(message, ex)
+    Future.successful(resolveError(ex))
   }
 
   private def resolveError(ex: Throwable) = {
