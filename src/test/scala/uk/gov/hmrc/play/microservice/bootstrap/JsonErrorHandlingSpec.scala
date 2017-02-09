@@ -16,38 +16,51 @@
 
 package uk.gov.hmrc.play.microservice.bootstrap
 
+import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
 import ch.qos.logback.classic.Level
 import org.mockito.Mockito._
 import org.scalatest.LoneElement
 import org.scalatest.concurrent.{Eventually, ScalaFutures}
 import org.scalatest.mock.MockitoSugar
+import play.api.libs.json.{JsString, Json}
 import play.api.mvc.RequestHeader
 import play.api.{GlobalSettings, Logger}
 import uk.gov.hmrc.play.http.{BadRequestException, NotFoundException, UnauthorizedException}
 import uk.gov.hmrc.play.test.{LogCapturing, UnitSpec}
 
-class JsonErrorHandlingSpec extends UnitSpec with ScalaFutures with MockitoSugar with LogCapturing with LoneElement with Eventually {
+
+trait MaterializerSupport {
+  implicit val system = ActorSystem("Sys")
+  implicit val materializer = ActorMaterializer()
+}
+
+class JsonErrorHandlingSpec extends UnitSpec with ScalaFutures with MockitoSugar with LogCapturing with LoneElement with Eventually with MaterializerSupport {
 
   "error handling in onError function" should {
 
     "convert a NotFoundException to NotFound response" in new Setup {
       val resultF = jsh.onError(requestHeader, new NotFoundException("test")).futureValue
       resultF.header.status shouldBe 404
+      jsonBodyOf(resultF) shouldBe Json.parse("""{"statusCode":404,"message":"test"}""")
     }
 
     "convert a BadRequestException to NotFound response" in new Setup {
       val resultF = jsh.onError(requestHeader, new BadRequestException("bad request")).futureValue
       resultF.header.status shouldBe 400
+      jsonBodyOf(resultF) shouldBe Json.parse("""{"statusCode":400,"message":"bad request"}""")
     }
 
     "convert an UnauthorizedException to Unauthorized response" in new Setup {
       val resultF = jsh.onError(requestHeader, new UnauthorizedException("unauthorized")).futureValue
       resultF.header.status shouldBe 401
+      jsonBodyOf(resultF) shouldBe Json.parse("""{"statusCode":401,"message":"unauthorized"}""")
     }
 
     "convert an Exception to InternalServerError" in new Setup {
       val resultF = jsh.onError(requestHeader, new Exception("any application exception")).futureValue
       resultF.header.status shouldBe 500
+      jsonBodyOf(resultF) shouldBe Json.parse("""{"statusCode":500,"message":"any application exception"}""")
     }
 
     "log one error message for each exception" in new Setup {

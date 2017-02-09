@@ -18,7 +18,7 @@ package uk.gov.hmrc.play.microservice.bootstrap
 
 import play.api.http.Status._
 import play.api.libs.json.Json
-import play.api.mvc.RequestHeader
+import play.api.mvc.{RequestHeader, Result}
 import play.api.mvc.Results._
 import play.api.{GlobalSettings, Logger}
 import uk.gov.hmrc.play.http.{HttpException, Upstream4xxResponse, Upstream5xxResponse}
@@ -37,7 +37,7 @@ trait JsonErrorHandling extends GlobalSettings {
     Future.successful(resolveError(ex))
   }
 
-  private def resolveError(ex: Throwable) = {
+  private def resolveError(ex: Throwable): Result = {
     val errorResponse = ex match {
       case e: HttpException       => ErrorResponse(e.responseCode, e.getMessage)
       case e: Upstream4xxResponse => ErrorResponse(e.reportAs, e.getMessage)
