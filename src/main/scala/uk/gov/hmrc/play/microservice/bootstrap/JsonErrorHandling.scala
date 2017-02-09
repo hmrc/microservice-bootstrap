@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.play.microservice.bootstrap
 
-import play.api.GlobalSettings
 import play.api.http.Status._
 import play.api.libs.json.Json
-import play.api.mvc.RequestHeader
+import play.api.mvc.{RequestHeader, Result}
 import play.api.mvc.Results._
+import play.api.{GlobalSettings, Logger}
 import uk.gov.hmrc.play.http.{HttpException, Upstream4xxResponse, Upstream5xxResponse}
 
 import scala.concurrent.Future
@@ -32,18 +32,20 @@ trait JsonErrorHandling extends GlobalSettings {
   implicit val erFormats = Json.format[ErrorResponse]
 
   override def onError(request: RequestHeader, ex: Throwable) = {
-    Future.successful {
-      val (code, message) = ex match {
-        case e: HttpException => (e.responseCode, e.getMessage)
+    val message = s"! Internal server error, for (${request.method}) [${request.uri}] -> "
+    Logger.error(message, ex)
+    Future.successful(resolveError(ex))
+  }
 
-        case e: Upstream4xxResponse => (e.reportAs, e.getMessage)
-        case e: Upstream5xxResponse => (e.reportAs, e.getMessage)
-
-        case e: Throwable => (INTERNAL_SERVER_ERROR, e.getMessage)
-      }
-
-      new Status(code)(Json.toJson(ErrorResponse(code, message)))
+  private def resolveError(ex: Throwable): Result = {
+    val errorResponse = ex match {
+      case e: HttpException       => ErrorResponse(e.responseCode, e.getMessage)
+      case e: Upstream4xxResponse => ErrorResponse(e.reportAs, e.getMessage)
+      case e: Upstream5xxResponse => ErrorResponse(e.reportAs, e.getMessage)
+      case e: Throwable           => ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage)
     }
+
+    new Status(errorResponse.statusCode)(Json.toJson(errorResponse))
   }
 
   override def onHandlerNotFound(request: RequestHeader) = {
