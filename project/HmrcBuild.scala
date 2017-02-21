@@ -33,8 +33,8 @@ object Dependencies {
 
   val compile = Seq(
     filters,
-    "uk.gov.hmrc" %% "play-filters" % "5.7.0",
-    "uk.gov.hmrc" %% "play-graphite" % "3.1.0",
+    "uk.gov.hmrc" %% "play-filters" % "5.9.0",
+    "uk.gov.hmrc" %% "play-graphite" % "3.2.0",
     "com.typesafe.play" %% "play" % "2.5.8",
     "de.threedimensions" %% "metrics-play" % "2.5.13",
     "ch.qos.logback" % "logback-core" % "1.1.7"
@@ -46,7 +46,7 @@ object Dependencies {
     "org.pegdown" % "pegdown" % "1.5.0" % "test",
     "org.mockito" % "mockito-all" % "1.9.5" % "test",
     "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % "test",
-    "uk.gov.hmrc" %% "hmrctest" % "2.2.0" % "test"
+    "uk.gov.hmrc" %% "hmrctest" % "2.3.0" % "test"
   )
 
 }
