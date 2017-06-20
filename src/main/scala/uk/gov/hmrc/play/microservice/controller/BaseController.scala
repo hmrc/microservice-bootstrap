@@ -16,16 +16,15 @@
 
 package uk.gov.hmrc.play.microservice.controller
 
-import play.api.mvc._
 import play.api.http.MimeTypes
+import play.api.libs.json.{JsError, JsSuccess, JsValue, Reads}
+import play.api.mvc.{Result, _}
 import uk.gov.hmrc.play.http.HeaderCarrier
+
 import scala.concurrent.Future
-import play.api.mvc.Result
-import play.api.libs.json.{JsError, JsSuccess, Reads, JsValue}
-import scala.util.{Failure, Success, Try}
 
 trait Utf8MimeTypes {
-  self : Controller =>
+  self: Controller =>
 
   override val JSON = s"${MimeTypes.JSON};charset=utf-8"
 
@@ -34,13 +33,14 @@ trait Utf8MimeTypes {
 
 trait BaseController extends Controller with Utf8MimeTypes {
 
-  implicit def hc(implicit rh: RequestHeader) = HeaderCarrier.fromHeadersAndSession(rh.headers)
+  implicit def hc(implicit rh: RequestHeader): HeaderCarrier = HeaderCarrier.fromHeadersAndSession(rh.headers)
 
-  protected def withJsonBody[T](f: (T) => Future[Result])(implicit request: Request[JsValue], m: Manifest[T], reads: Reads[T]) =
-    Try(request.body.validate[T]) match {
-      case Success(JsSuccess(payload, _)) => f(payload)
-      case Success(JsError(errs)) => Future.successful(BadRequest(s"Invalid ${m.runtimeClass.getSimpleName} payload: $errs"))
-      case Failure(e) => Future.successful(BadRequest(s"could not parse body due to ${e.getMessage}"))
+  protected[controller] def withJsonBody[T](
+      f: (T) => Future[Result])(implicit request: Request[JsValue], m: Manifest[T], reads: Reads[T]): Future[Result] =
+    request.body.validate[T] match {
+      case JsSuccess(payload, _) => f(payload)
+      case JsError(errs) =>
+        Future.successful(BadRequest(s"Invalid ${m.runtimeClass.getSimpleName} payload: $errs"))
     }
 
 }
