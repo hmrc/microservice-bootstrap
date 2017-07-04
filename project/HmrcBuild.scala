@@ -21,7 +21,8 @@ object HmrcBuild extends Build {
         Resolver.bintrayRepo("hmrc", "releases"),
         Resolver.typesafeRepo("releases"),
         Resolver.jcenterRepo
-      )
+      ),
+      version := "100.0-SNAPSHOT"
     )
     .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
 
@@ -33,7 +34,11 @@ object Dependencies {
 
   val compile = Seq(
     filters,
-    "uk.gov.hmrc" %% "play-filters" % "5.18.0",
+    "uk.gov.hmrc" %% "play-filters" % "100.0-SNAPSHOT",
+    "uk.gov.hmrc" %% "http-verbs" % "100.0-SNAPSHOT",
+    "uk.gov.hmrc" %% "http-verbs-play-25" % "100.0-SNAPSHOT",
+    "uk.gov.hmrc" %% "play-auditing" % "100.0-SNAPSHOT",
+
     "uk.gov.hmrc" %% "play-graphite" % "3.2.0",
     "com.typesafe.play" %% "play" % "2.5.12",
     "de.threedimensions" %% "metrics-play" % "2.5.13",
