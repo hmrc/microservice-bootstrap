@@ -34,7 +34,6 @@ object Dependencies {
 
   val compile = Seq(
     filters,
-    "uk.gov.hmrc" %% "play-filters" % "100.0-SNAPSHOT",
     "uk.gov.hmrc" %% "http-verbs" % "100.0-SNAPSHOT",
     "uk.gov.hmrc" %% "http-verbs-play-25" % "100.0-SNAPSHOT",
     "uk.gov.hmrc" %% "play-auditing" % "100.0-SNAPSHOT",
@@ -47,6 +46,7 @@ object Dependencies {
 
   val test = Seq(
     "com.typesafe.play" %% "play-test" % PlayVersion.current % "test",
+    "com.typesafe.play" %% "play-specs2" % PlayVersion.current % "test",
     "org.scalatest" %% "scalatest" % "2.2.4" % "test",
     "org.pegdown" % "pegdown" % "1.5.0" % "test",
     "org.mockito" % "mockito-all" % "1.9.5" % "test",

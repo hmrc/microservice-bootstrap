@@ -17,18 +17,18 @@
 package uk.gov.hmrc.play.microservice.bootstrap
 
 import org.mockito.Mockito
+import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{Matchers, WordSpecLike}
+import org.scalatestplus.play.OneAppPerSuite
+import play.api.Application
 import play.api.mvc.{EssentialFilter, RequestHeader}
 import play.api.test.FakeHeaders
-import play.api.{Application, PlayException}
+import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.audit.EventTypes
 import uk.gov.hmrc.play.audit.filters.AuditFilter
-import uk.gov.hmrc.play.http.NotFoundException
 import uk.gov.hmrc.play.http.logging.filters.LoggingFilter
-import Mockito._
-import org.scalatestplus.play.OneAppPerSuite
 
 class DefaultMicroserviceGlobalSpec extends WordSpecLike with Matchers with ScalaFutures with MockitoSugar with OneAppPerSuite {
 

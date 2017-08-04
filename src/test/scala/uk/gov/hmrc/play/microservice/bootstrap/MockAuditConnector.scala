@@ -17,12 +17,13 @@
 package uk.gov.hmrc.play.microservice.bootstrap
 
 import play.api.libs.json.JsValue
+import play.api.libs.ws.WSResponse
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.config.AuditingConfig
-import uk.gov.hmrc.play.audit.http.connector.{AuditResult, AuditConnector}
+import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.{AuditEvent, MergedDataEvent}
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 
 class MockAuditConnector extends AuditConnector {
@@ -43,7 +44,7 @@ class MockAuditConnector extends AuditConnector {
 
   override protected def logError(s: String): Unit = ???
 
-  override protected def callAuditConsumer(url:String, body: JsValue)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = ???
+  override protected def callAuditConsumer(url: String, body: JsValue)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[WSResponse] = ???
 
   override def auditingConfig: AuditingConfig = ???
 }
