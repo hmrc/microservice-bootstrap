@@ -23,12 +23,12 @@ import org.scalatest.mock.MockitoSugar
 import org.scalatest.{Matchers, WordSpecLike}
 import org.scalatestplus.play.OneAppPerSuite
 import play.api.Application
-import play.api.mvc.{EssentialFilter, RequestHeader}
+import play.api.mvc.{EssentialFilter, RequestHeader, Session}
 import play.api.test.FakeHeaders
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.audit.EventTypes
-import uk.gov.hmrc.play.audit.filters.AuditFilter
 import uk.gov.hmrc.play.http.logging.filters.LoggingFilter
+import uk.gov.hmrc.play.microservice.filters.AuditFilter
 
 class DefaultMicroserviceGlobalSpec extends WordSpecLike with Matchers with ScalaFutures with MockitoSugar with OneAppPerSuite {
 
@@ -36,6 +36,7 @@ class DefaultMicroserviceGlobalSpec extends WordSpecLike with Matchers with Scal
 
   when(requestHeader.headers).thenReturn(FakeHeaders(Seq.empty))
   when(requestHeader.method).thenReturn("GET")
+  when(requestHeader.session).thenReturn(Session())
 
   class TestRestGlobal extends DefaultMicroserviceGlobal {
     override val auditConnector = new MockAuditConnector()

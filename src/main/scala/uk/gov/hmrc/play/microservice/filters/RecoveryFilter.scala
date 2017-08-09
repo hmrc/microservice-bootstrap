@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.play.filters
+package uk.gov.hmrc.play.microservice.filters
 
 import akka.util.ByteString
 import play.api.http.Status._
@@ -22,7 +22,6 @@ import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.streams.Accumulator
 import play.api.mvc._
 import uk.gov.hmrc.http.HttpException
-
 
 object RecoveryFilter extends EssentialFilter with Results {
 

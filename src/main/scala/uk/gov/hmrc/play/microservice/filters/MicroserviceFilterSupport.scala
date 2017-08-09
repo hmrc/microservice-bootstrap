@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.play.filters
+package uk.gov.hmrc.play.microservice.filters
 
 import akka.stream.Materializer
 import play.api.Play

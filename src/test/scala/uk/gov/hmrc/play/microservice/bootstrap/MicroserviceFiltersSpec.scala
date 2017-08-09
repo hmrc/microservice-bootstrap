@@ -21,10 +21,9 @@ import org.scalatest.mock.MockitoSugar
 import org.scalatest.{Matchers, WordSpecLike}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.EssentialFilter
-import play.api.test.FakeApplication
-import uk.gov.hmrc.play.audit.filters.AuditFilter
 import uk.gov.hmrc.play.http.logging.filters.LoggingFilter
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.microservice.filters.AuditFilter
 
 class MicroserviceFiltersSpec extends WordSpecLike with Matchers with MockitoSugar {
 

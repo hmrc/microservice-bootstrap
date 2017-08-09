@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.play.filters
+package uk.gov.hmrc.play.microservice.filters
 
 import org.scalatest.{Matchers, WordSpecLike}
 import org.scalatest.concurrent.ScalaFutures

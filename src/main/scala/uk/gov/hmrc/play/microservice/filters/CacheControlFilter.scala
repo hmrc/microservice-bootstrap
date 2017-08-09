@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.play.filters
+package uk.gov.hmrc.play.microservice.filters
 
 import play.api.mvc.{Filter, RequestHeader, Result}
 import play.api.{Logger, Play}
