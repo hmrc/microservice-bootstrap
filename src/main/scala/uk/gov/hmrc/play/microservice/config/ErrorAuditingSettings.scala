@@ -41,8 +41,7 @@ trait ErrorAuditingSettings extends GlobalSettings with HttpAuditEvent {
       case _ => ServerInternalError
     }
 
-    auditConnector.sendEvent(dataEvent(code, unexpectedError, request)(HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session)))
-      .withDetail((TransactionFailureReason, ex.getMessage)))
+    auditConnector.sendEvent(dataEvent(code, unexpectedError, request, Map(TransactionFailureReason -> ex.getMessage))(HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))))
     super.onError(request, ex)
   }
 

@@ -18,6 +18,7 @@ package uk.gov.hmrc.play.microservice.config
 
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.AuditExtensions._
 import uk.gov.hmrc.play.audit.model.DataEvent
 
@@ -37,8 +38,8 @@ trait HttpAuditEvent {
     val Referer = "Referer"
   }
 
-  protected[config] def dataEvent(eventType: String, transactionName: String, request: RequestHeader)
-                                 (implicit hc: HeaderCarrier) = {
+  protected[config] def dataEvent(eventType: String, transactionName: String, request: RequestHeader, detail: Map[String, String] = Map())
+                                 (implicit hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers)): DataEvent = {
 
     import auditDetailKeys._
     import headers._
@@ -51,7 +52,7 @@ trait HttpAuditEvent {
 
     val tags = hc.toAuditTags(transactionName, request.path)
 
-    DataEvent(appName, eventType, detail = requiredFields ++ optionalAuditFieldsSeq(request.headers.toMap), tags = tags)
+    DataEvent(appName, eventType, detail = detail ++ requiredFields ++ optionalAuditFieldsSeq(request.headers.toMap), tags = tags)
   }
 }
 
