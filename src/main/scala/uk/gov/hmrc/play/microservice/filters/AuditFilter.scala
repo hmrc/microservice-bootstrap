@@ -112,12 +112,12 @@ trait AuditFilter extends EssentialFilter with HttpAuditEvent {
         maybeResult match {
           case Success(result) =>
             auditConnector.sendEvent(
-              dataEvent(EventTypes.RequestReceived, requestHeader.uri, requestHeader)
-                .withDetail(ResponseMessage -> responseBody, StatusCode -> result.header.status.toString))
+              dataEvent(EventTypes.RequestReceived, requestHeader.uri, requestHeader,
+                Map(ResponseMessage -> responseBody, StatusCode -> result.header.status.toString)))
           case Failure(f) =>
             auditConnector.sendEvent(
-              dataEvent(EventTypes.RequestReceived, requestHeader.uri, requestHeader)
-                .withDetail(FailedRequestMessage -> f.getMessage))
+              dataEvent(EventTypes.RequestReceived, requestHeader.uri, requestHeader,
+                Map(FailedRequestMessage -> f.getMessage)))
         }
       }
 
