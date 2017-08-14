@@ -22,7 +22,7 @@ object HmrcBuild extends Build {
         Resolver.typesafeRepo("releases"),
         Resolver.jcenterRepo
       ),
-      version := "100.0-SNAPSHOT"
+      version := "200.0-SNAPSHOT"
     )
     .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
 
@@ -36,9 +36,14 @@ object Dependencies {
     filters,
     "uk.gov.hmrc" %% "http-verbs" % "7.0.0",
     "uk.gov.hmrc" %% "http-verbs-play-25" % "0.6.0",
-    "uk.gov.hmrc" %% "play-auditing" % "100.0-SNAPSHOT",
-
+    "uk.gov.hmrc" %% "play-auditing" % "200.0-SNAPSHOT",
+    "uk.gov.hmrc" %% "play-auth" % "100.0-SNAPSHOT",
+    "uk.gov.hmrc" %% "play-health" % "2.1.0",
+    "uk.gov.hmrc" %% "play-url-binders" % "2.1.0",
+    "uk.gov.hmrc" %% "play-config" % "4.3.0",
     "uk.gov.hmrc" %% "play-graphite" % "3.2.0",
+    "uk.gov.hmrc" %% "domain" % "4.1.0",
+    "uk.gov.hmrc" %% "logback-json-logger" % "3.1.0",
     "com.typesafe.play" %% "play" % "2.5.12",
     "de.threedimensions" %% "metrics-play" % "2.5.13",
     "ch.qos.logback" % "logback-core" % "1.1.7"

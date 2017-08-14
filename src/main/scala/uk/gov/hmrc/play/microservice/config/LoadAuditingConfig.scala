@@ -17,6 +17,7 @@
 package uk.gov.hmrc.play.microservice.config
 
 import play.api.Play
+import play.api.http.HeaderNames
 import uk.gov.hmrc.play.audit.http.config.{AuditingConfig, BaseUri, Consumer}
 
 object LoadAuditingConfig {
