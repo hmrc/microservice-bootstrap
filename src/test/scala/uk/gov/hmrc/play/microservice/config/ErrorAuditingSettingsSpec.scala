@@ -17,21 +17,20 @@
 package uk.gov.hmrc.play.microservice.config
 
 import org.mockito.ArgumentCaptor
-import org.scalatest.{Matchers, WordSpecLike}
-import org.mockito.Mockito._
 import org.mockito.Matchers._
+import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
-import play.api.mvc.{RequestHeader, Result, Results}
+import org.scalatest.{Matchers, WordSpecLike}
 import play.api.GlobalSettings
-import uk.gov.hmrc.play.audit.EventTypes
+import play.api.mvc.{RequestHeader, Result, Results}
+import uk.gov.hmrc.http.{HeaderCarrier, JsValidationException, NotFoundException}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import uk.gov.hmrc.play.audit.model.DataEvent
-import uk.gov.hmrc.http.{HeaderCarrier, JsValidationException, NotFoundException}
 import uk.gov.hmrc.play.microservice.FutureValues
 
-import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
 class ErrorAuditingSettingsSpec extends WordSpecLike with Matchers with FutureValues with MockitoSugar {
 

@@ -26,9 +26,10 @@ import play.api.http.HttpEntity.Streamed
 import play.api.libs.streams.Accumulator
 import play.api.mvc.{Result, _}
 import uk.gov.hmrc.play.audit.EventKeys._
-import uk.gov.hmrc.play.audit.EventTypes
+import uk.gov.hmrc.play.microservice.config.EventTypes.RequestReceived
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.audit.model.EventTypes
 import uk.gov.hmrc.play.microservice.config.HttpAuditEvent
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -112,11 +113,11 @@ trait AuditFilter extends EssentialFilter with HttpAuditEvent {
         maybeResult match {
           case Success(result) =>
             auditConnector.sendEvent(
-              dataEvent(EventTypes.RequestReceived, requestHeader.uri, requestHeader,
+              dataEvent(RequestReceived, requestHeader.uri, requestHeader,
                 Map(ResponseMessage -> responseBody, StatusCode -> result.header.status.toString)))
           case Failure(f) =>
             auditConnector.sendEvent(
-              dataEvent(EventTypes.RequestReceived, requestHeader.uri, requestHeader,
+              dataEvent(RequestReceived, requestHeader.uri, requestHeader,
                 Map(FailedRequestMessage -> f.getMessage)))
         }
       }

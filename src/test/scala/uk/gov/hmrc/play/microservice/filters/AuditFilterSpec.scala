@@ -28,7 +28,7 @@ import org.scalatest.{Matchers, WordSpecLike}
 import play.api.test.Helpers._
 import play.api.test.{FakeApplication, FakeRequest}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.EventTypes
+import uk.gov.hmrc.play.microservice.config.EventTypes
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import uk.gov.hmrc.play.audit.model.DataEvent
