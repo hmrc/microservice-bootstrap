@@ -21,8 +21,7 @@ object HmrcBuild extends Build {
         Resolver.bintrayRepo("hmrc", "releases"),
         Resolver.typesafeRepo("releases"),
         Resolver.jcenterRepo
-      ),
-      version := "100.0-SNAPSHOT"
+      )
     )
     .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
 
