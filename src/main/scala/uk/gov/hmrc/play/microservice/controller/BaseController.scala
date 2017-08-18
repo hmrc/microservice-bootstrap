@@ -18,10 +18,12 @@ package uk.gov.hmrc.play.microservice.controller
 
 import play.api.mvc._
 import play.api.http.MimeTypes
-import uk.gov.hmrc.play.http.HeaderCarrier
+
 import scala.concurrent.Future
 import play.api.mvc.Result
-import play.api.libs.json.{JsError, JsSuccess, Reads, JsValue}
+import play.api.libs.json.{JsError, JsSuccess, JsValue, Reads}
+import uk.gov.hmrc.play.HeaderCarrierConverter
+
 import scala.util.{Failure, Success, Try}
 
 trait Utf8MimeTypes {
@@ -34,7 +36,7 @@ trait Utf8MimeTypes {
 
 trait BaseController extends Controller with Utf8MimeTypes {
 
-  implicit def hc(implicit rh: RequestHeader) = HeaderCarrier.fromHeadersAndSession(rh.headers)
+  implicit def hc(implicit rh: RequestHeader) = HeaderCarrierConverter.fromHeadersAndSession(rh.headers)
 
   protected def withJsonBody[T](f: (T) => Future[Result])(implicit request: Request[JsValue], m: Manifest[T], reads: Reads[T]) =
     Try(request.body.validate[T]) match {

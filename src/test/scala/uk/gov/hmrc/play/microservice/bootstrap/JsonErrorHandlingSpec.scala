@@ -26,7 +26,7 @@ import org.scalatest.mock.MockitoSugar
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc.RequestHeader
 import play.api.{GlobalSettings, Logger}
-import uk.gov.hmrc.play.http.{BadRequestException, NotFoundException, UnauthorizedException}
+import uk.gov.hmrc.http.{BadRequestException, NotFoundException, UnauthorizedException}
 import uk.gov.hmrc.play.test.{LogCapturing, UnitSpec}
 
 
