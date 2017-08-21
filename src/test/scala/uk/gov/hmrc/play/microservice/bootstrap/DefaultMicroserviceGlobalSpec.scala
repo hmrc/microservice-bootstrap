@@ -29,9 +29,8 @@ import play.api.test.FakeHeaders
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.DataEvent
-import uk.gov.hmrc.play.http.logging.filters.LoggingFilter
 import uk.gov.hmrc.play.microservice.config.EventTypes
-import uk.gov.hmrc.play.microservice.filters.AuditFilter
+import uk.gov.hmrc.play.microservice.filters.{AuditFilter, LoggingFilter}
 
 import scala.concurrent.ExecutionContext
 

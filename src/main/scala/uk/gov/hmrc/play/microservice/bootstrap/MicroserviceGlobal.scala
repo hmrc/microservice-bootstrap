@@ -22,7 +22,6 @@ import play.api._
 import play.api.mvc._
 import uk.gov.hmrc.play.microservice.filters._
 import uk.gov.hmrc.play.graphite.GraphiteConfig
-import uk.gov.hmrc.play.http.logging.filters.LoggingFilter
 import uk.gov.hmrc.play.microservice.bootstrap.Routing.RemovingOfTrailingSlashes
 import uk.gov.hmrc.play.microservice.config.ErrorAuditingSettings
 
