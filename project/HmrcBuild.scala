@@ -14,9 +14,9 @@ object HmrcBuild extends Build {
   lazy val library = Project(appName, file("."))
     .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning)
     .settings(
-      scalaVersion := "2.11.7",
+      scalaVersion := "2.11.11",
       libraryDependencies ++= appDependencies,
-      crossScalaVersions := Seq("2.11.7"),
+      crossScalaVersions := Seq("2.11.11"),
       resolvers := Seq(
         Resolver.bintrayRepo("hmrc", "releases"),
         Resolver.typesafeRepo("releases"),
@@ -38,6 +38,7 @@ object Dependencies {
     "uk.gov.hmrc" %% "play-auditing" % "3.0.0",
     "uk.gov.hmrc" %% "auth-client" % "0.2.0",
     "uk.gov.hmrc" %% "play-graphite" % "3.2.0",
+    "uk.gov.hmrc" %% "play-config" % "4.3.0",
     "com.typesafe.play" %% "play" % "2.5.12",
     "de.threedimensions" %% "metrics-play" % "2.5.13",
     "ch.qos.logback" % "logback-core" % "1.1.7"
