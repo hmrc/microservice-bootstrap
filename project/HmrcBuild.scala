@@ -38,7 +38,7 @@ object Dependencies {
     "uk.gov.hmrc" %% "play-auditing" % "3.2.0",
     "uk.gov.hmrc" %% "play-graphite" % "3.2.0",
     "uk.gov.hmrc" %% "play-config" % "4.3.0",
-    "uk.gov.hmrc" %% "play-authorisation" % "5.0.0",
+    "uk.gov.hmrc" %% "play-authorisation" % "5.1.0",
     "uk.gov.hmrc" %% "play-health" % "2.1.0",
     "ch.qos.logback" % "logback-core" % "1.1.7",
     "uk.gov.hmrc" %% "logback-json-logger" % "3.1.0",
