@@ -44,7 +44,7 @@ object CacheControlFilter {
     new CacheControlFilter {
       override lazy val cachableContentTypes = {
         val c = Play.current.configuration.getStringList(configKey).toList.map(_.asScala).flatten
-        Logger.info(s"Will allow caching of content types matching: ${c.mkString(", ")}")
+        Logger.debug(s"Will allow caching of content types matching: ${c.mkString(", ")}")
         c
       }
     }
