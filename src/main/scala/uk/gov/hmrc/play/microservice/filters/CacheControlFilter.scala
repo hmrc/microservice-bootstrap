@@ -18,16 +18,19 @@ package uk.gov.hmrc.play.microservice.filters
 
 import play.api.mvc.{Filter, RequestHeader, Result}
 import play.api.{Logger, Play}
-import play.mvc.Http.{HeaderNames, Status}
+import play.mvc.Http.Status
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.collection.JavaConverters._
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 abstract class CacheControlFilter extends Filter with MicroserviceFilterSupport {
   val cachableContentTypes: Seq[String]
 
   final def apply(next: (RequestHeader) => Future[Result])(rh: RequestHeader): Future[Result] = {
+    implicit val hc:HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(rh.headers, Some(rh.session))
     next(rh).map(r =>
       (r.header.status, r.body.contentType) match {
         case (Status.NOT_MODIFIED, _) => r
@@ -43,7 +46,7 @@ object CacheControlFilter {
   def fromConfig(configKey: String) = {
     new CacheControlFilter {
       override lazy val cachableContentTypes = {
-        val c = Play.current.configuration.getStringList(configKey).toList.map(_.asScala).flatten
+        val c = Play.current.configuration.getStringList(configKey).toList.flatMap(_.asScala)
         Logger.debug(s"Will allow caching of content types matching: ${c.mkString(", ")}")
         c
       }

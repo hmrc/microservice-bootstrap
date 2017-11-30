@@ -18,7 +18,7 @@ package uk.gov.hmrc.play.microservice.config
 
 import play.api.GlobalSettings
 import play.api.mvc.{RequestHeader, Result}
-import uk.gov.hmrc.http.{JsValidationException, NotFoundException}
+import uk.gov.hmrc.http.{HeaderCarrier, JsValidationException, NotFoundException}
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
@@ -34,7 +34,7 @@ object EventTypes {
 }
 
 trait ErrorAuditingSettings extends GlobalSettings with HttpAuditEvent {
-  import scala.concurrent.ExecutionContext.Implicits.global
+  import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
   import EventTypes._
 
   def auditConnector: AuditConnector
@@ -45,6 +45,7 @@ trait ErrorAuditingSettings extends GlobalSettings with HttpAuditEvent {
   private val badRequestError = "Request bad format exception"
 
   override def onError(request: RequestHeader, ex: Throwable): Future[Result] = {
+    implicit val hc:HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
     val code = ex match {
       case e: NotFoundException => ResourceNotFound
       case jsError: JsValidationException => ServerValidationError
@@ -56,11 +57,13 @@ trait ErrorAuditingSettings extends GlobalSettings with HttpAuditEvent {
   }
 
   override def onHandlerNotFound(request: RequestHeader): Future[Result] = {
+    implicit val hc:HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
     auditConnector.sendEvent(dataEvent(ResourceNotFound, notFoundError, request)(HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))))
     super.onHandlerNotFound(request)
   }
 
   override def onBadRequest(request: RequestHeader, error: String): Future[Result] = {
+    implicit val hc:HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
     auditConnector.sendEvent(dataEvent(ServerValidationError, badRequestError, request)(HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))))
     super.onBadRequest(request, error)
   }
