@@ -21,17 +21,16 @@ import akka.stream.{ActorMaterializer, Materializer}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers._
 import org.mockito.Mockito._
-import org.scalatest.concurrent.{Eventually, ScalaFutures}
-import org.scalatest.mock.MockitoSugar
-import org.scalatest.time.{Millis, Seconds, Span}
+import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpecLike}
 import play.api.test.Helpers._
 import play.api.test.{FakeApplication, FakeRequest}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.microservice.config.EventTypes
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import uk.gov.hmrc.play.audit.model.DataEvent
+import uk.gov.hmrc.play.microservice.config.EventTypes
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,7 +41,8 @@ class AuditFilterSpec
     with Eventually
     with ScalaFutures
     with FilterFlowMock
-    with MockitoSugar {
+    with MockitoSugar
+with IntegrationPatience{
 
   "AuditFilter" should {
     val applicationName = "app-name"
@@ -51,8 +51,6 @@ class AuditFilterSpec
     val xSessionId       = "A_SESSION_ID"
     val deviceID         = "A_DEVICE_ID"
     val akamaiReputation = "AN_AKAMAI_REPUTATION"
-
-    val config = PatienceConfig(Span(5, Seconds), Span(15, Millis))
 
     implicit val system       = ActorSystem()
     implicit val materializer = ActorMaterializer()
@@ -100,7 +98,7 @@ class AuditFilterSpec
         event.tags("Akamai-Reputation") shouldBe akamaiReputation
         event.detail("deviceID")        shouldBe deviceID
         event.detail("responseMessage") shouldBe actionNotFoundMessage
-      }(config)
+      }
     }
 
     "audit a response even when an action further down the chain throws an exception" in running(FakeApplication()) {
@@ -125,7 +123,7 @@ class AuditFilterSpec
         event.tags("X-Session-ID")      shouldBe xSessionId
         event.tags("Akamai-Reputation") shouldBe akamaiReputation
         event.detail("deviceID")        shouldBe deviceID
-      }(config)
+      }
     }
   }
 }

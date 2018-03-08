@@ -20,7 +20,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, WordSpecLike}
 import org.scalatestplus.play.OneAppPerTest
 import play.api.http.HeaderNames
@@ -30,7 +30,7 @@ import play.api.test._
 
 import scala.concurrent.Future
 
-class CacheControlFilterSpec extends WordSpecLike with Matchers with MockitoSugar with ScalaFutures with OneAppPerTest {
+class CacheControlFilterSpec extends WordSpecLike with Matchers with MockitoSugar with ScalaFutures {
 
   private trait Setup extends Results {
 
