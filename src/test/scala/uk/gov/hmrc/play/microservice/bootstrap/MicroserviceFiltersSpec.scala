@@ -17,7 +17,7 @@
 package uk.gov.hmrc.play.microservice.bootstrap
 
 import com.kenshoo.play.metrics.PlayModule
-import org.scalatest.mockito.MockitoSugar
+import org.scalatest.mock.MockitoSugar
 import org.scalatest.{Matchers, WordSpecLike}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.EssentialFilter

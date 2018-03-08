@@ -22,7 +22,7 @@ import ch.qos.logback.classic.Level
 import org.mockito.Mockito._
 import org.scalatest.LoneElement
 import org.scalatest.concurrent.{Eventually, ScalaFutures}
-import org.scalatest.mockito.MockitoSugar
+import org.scalatest.mock.MockitoSugar
 import play.api.libs.json.Json
 import play.api.mvc.RequestHeader
 import play.api.{GlobalSettings, Logger}

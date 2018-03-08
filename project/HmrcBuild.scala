@@ -53,8 +53,8 @@ object Dependencies {
     "com.typesafe.play"      %% "play-specs2"        % PlayVersion.current % "test",
     "org.pegdown"            % "pegdown"             % "1.5.0"             % "test",
     "org.mockito"            % "mockito-all"         % "1.9.5"             % "test",
-    "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1"             % "test",
-    "uk.gov.hmrc"            %% "hmrctest"           % "3.0.0"             % "test"
+    "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1"             % "test",
+    "uk.gov.hmrc"            %% "hmrctest"           % "2.3.0"             % "test"
   )
 
 }
