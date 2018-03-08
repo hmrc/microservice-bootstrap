@@ -36,43 +36,56 @@ import uk.gov.hmrc.play.audit.model.DataEvent
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuditFilterSpec extends WordSpecLike with Matchers with Eventually with ScalaFutures with FilterFlowMock with MockitoSugar {
+class AuditFilterSpec
+    extends WordSpecLike
+    with Matchers
+    with Eventually
+    with ScalaFutures
+    with FilterFlowMock
+    with MockitoSugar {
 
   "AuditFilter" should {
     val applicationName = "app-name"
 
-    val xRequestId = "A_REQUEST_ID"
-    val xSessionId = "A_SESSION_ID"
-    val deviceID = "A_DEVICE_ID"
+    val xRequestId       = "A_REQUEST_ID"
+    val xSessionId       = "A_SESSION_ID"
+    val deviceID         = "A_DEVICE_ID"
     val akamaiReputation = "AN_AKAMAI_REPUTATION"
 
     val config = PatienceConfig(Span(5, Seconds), Span(15, Millis))
 
-    implicit val system = ActorSystem()
+    implicit val system       = ActorSystem()
     implicit val materializer = ActorMaterializer()
-    implicit val hc = HeaderCarrier
-    val request = FakeRequest().withHeaders("X-Request-ID" -> xRequestId, "X-Session-ID" -> xSessionId, "deviceID" -> deviceID, "Akamai-Reputation" -> akamaiReputation)
+    implicit val hc           = HeaderCarrier
+    val request = FakeRequest().withHeaders(
+      "X-Request-ID"      -> xRequestId,
+      "X-Session-ID"      -> xSessionId,
+      "deviceID"          -> deviceID,
+      "Akamai-Reputation" -> akamaiReputation)
 
     def createAuditFilter(connector: AuditConnector) =
       new AuditFilter {
         override val auditConnector: AuditConnector = connector
-        override val appName: String = applicationName
+        override val appName: String                = applicationName
 
         override def controllerNeedsAuditing(controllerName: String): Boolean = true
 
-        implicit val system = ActorSystem("test")
+        implicit val system                     = ActorSystem("test")
         implicit override def mat: Materializer = ActorMaterializer()
       }
 
     "audit a request and response with header information" in running(FakeApplication()) {
       val mockAuditConnector = mock[AuditConnector]
-      val auditFilter = createAuditFilter(mockAuditConnector)
+      val auditFilter        = createAuditFilter(mockAuditConnector)
 
-      when(mockAuditConnector.sendEvent(any[DataEvent])(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future {Success})
+      when(mockAuditConnector.sendEvent(any[DataEvent])(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future {
+        Success
+      })
 
       val result = await(auditFilter.apply(nextAction)(request).run)
 
-      await(result.body.dataStream.runForeach({ i => }))
+      await(result.body.dataStream.runForeach({ i =>
+        }))
 
       eventually {
         val captor = ArgumentCaptor.forClass(classOf[DataEvent])
@@ -80,21 +93,23 @@ class AuditFilterSpec extends WordSpecLike with Matchers with Eventually with Sc
         verifyNoMoreInteractions(mockAuditConnector)
         val event = captor.getValue
 
-        event.auditSource shouldBe applicationName
-        event.auditType shouldBe EventTypes.RequestReceived
-        event.tags("X-Request-ID") shouldBe xRequestId
-        event.tags("X-Session-ID") shouldBe xSessionId
+        event.auditSource               shouldBe applicationName
+        event.auditType                 shouldBe EventTypes.RequestReceived
+        event.tags("X-Request-ID")      shouldBe xRequestId
+        event.tags("X-Session-ID")      shouldBe xSessionId
         event.tags("Akamai-Reputation") shouldBe akamaiReputation
-        event.detail("deviceID") shouldBe deviceID
+        event.detail("deviceID")        shouldBe deviceID
         event.detail("responseMessage") shouldBe actionNotFoundMessage
-      } (config)
+      }(config)
     }
 
     "audit a response even when an action further down the chain throws an exception" in running(FakeApplication()) {
       val mockAuditConnector = mock[AuditConnector]
-      val auditFilter = createAuditFilter(mockAuditConnector)
+      val auditFilter        = createAuditFilter(mockAuditConnector)
 
-      when(mockAuditConnector.sendEvent(any[DataEvent])(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future {Success})
+      when(mockAuditConnector.sendEvent(any[DataEvent])(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future {
+        Success
+      })
 
       a[RuntimeException] should be thrownBy await(auditFilter.apply(exceptionThrowingAction)(request).run)
 
@@ -104,13 +119,13 @@ class AuditFilterSpec extends WordSpecLike with Matchers with Eventually with Sc
         verifyNoMoreInteractions(mockAuditConnector)
         val event = captor.getValue
 
-        event.auditSource shouldBe applicationName
-        event.auditType shouldBe EventTypes.RequestReceived
-        event.tags("X-Request-ID") shouldBe xRequestId
-        event.tags("X-Session-ID") shouldBe xSessionId
+        event.auditSource               shouldBe applicationName
+        event.auditType                 shouldBe EventTypes.RequestReceived
+        event.tags("X-Request-ID")      shouldBe xRequestId
+        event.tags("X-Session-ID")      shouldBe xSessionId
         event.tags("Akamai-Reputation") shouldBe akamaiReputation
-        event.detail("deviceID") shouldBe deviceID
-      } (config)
+        event.detail("deviceID")        shouldBe deviceID
+      }(config)
     }
   }
 }

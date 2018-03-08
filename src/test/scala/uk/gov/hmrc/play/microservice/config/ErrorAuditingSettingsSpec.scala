@@ -57,7 +57,9 @@ class ErrorAuditingSettingsSpec extends WordSpecLike with Matchers with FutureVa
     }
   }
 
-  class TestErrorAuditing(override val auditConnector: AuditConnector) extends ParentHandler with ErrorAuditingSettings {
+  class TestErrorAuditing(override val auditConnector: AuditConnector)
+      extends ParentHandler
+      with ErrorAuditingSettings {
     override lazy val appName = "app"
   }
 
@@ -65,7 +67,7 @@ class ErrorAuditingSettingsSpec extends WordSpecLike with Matchers with FutureVa
 
     "send ServerInternalError event to DataStream for an Exception that occurred in the microservice" in {
       val mockConnector = createMockConnector
-      val auditing = new TestErrorAuditing(mockConnector)
+      val auditing      = new TestErrorAuditing(mockConnector)
 
       val resultF = auditing.onError(new DummyRequestHeader(), new Exception("a generic application exception"))
       awaitResult(resultF)
@@ -75,7 +77,7 @@ class ErrorAuditingSettingsSpec extends WordSpecLike with Matchers with FutureVa
 
     "send ResourceNotFound event to DataStream for a NotFoundException that occurred in the microservice" in {
       val mockConnector = createMockConnector
-      val auditing = new TestErrorAuditing(mockConnector)
+      val auditing      = new TestErrorAuditing(mockConnector)
 
       val resultF = auditing.onError(new DummyRequestHeader(), new NotFoundException("test"))
       awaitResult(resultF)
@@ -85,9 +87,10 @@ class ErrorAuditingSettingsSpec extends WordSpecLike with Matchers with FutureVa
 
     "send ServerValidationError event to DataStream for a JsValidationException that occurred in the microservice" in {
       val mockConnector = createMockConnector
-      val auditing = new TestErrorAuditing(mockConnector)
+      val auditing      = new TestErrorAuditing(mockConnector)
 
-      val resultF = auditing.onError(new DummyRequestHeader(), new JsValidationException("GET", "", classOf[String], ""))
+      val resultF =
+        auditing.onError(new DummyRequestHeader(), new JsValidationException("GET", "", classOf[String], ""))
       awaitResult(resultF)
       val event = verifyAndRetrieveEvent(mockConnector)
       event.auditType shouldBe EventTypes.ServerValidationError
@@ -95,7 +98,7 @@ class ErrorAuditingSettingsSpec extends WordSpecLike with Matchers with FutureVa
 
     "chain onError call to parent" in {
       val mockConnector = createMockConnector
-      val auditing = new TestErrorAuditing(mockConnector)
+      val auditing      = new TestErrorAuditing(mockConnector)
 
       val resultF = auditing.onError(new DummyRequestHeader(), new NotFoundException("test"))
       awaitResult(resultF)
@@ -109,7 +112,7 @@ class ErrorAuditingSettingsSpec extends WordSpecLike with Matchers with FutureVa
     "send ResourceNotFound event to DataStream" in {
 
       val mockConnector = createMockConnector
-      val auditing = new TestErrorAuditing(mockConnector)
+      val auditing      = new TestErrorAuditing(mockConnector)
 
       val resultF = auditing.onHandlerNotFound(new DummyRequestHeader())
       awaitResult(resultF)
@@ -119,7 +122,7 @@ class ErrorAuditingSettingsSpec extends WordSpecLike with Matchers with FutureVa
 
     "chain onHandlerNotFound call to parent" in {
       val mockConnector = createMockConnector
-      val auditing = new TestErrorAuditing(mockConnector)
+      val auditing      = new TestErrorAuditing(mockConnector)
 
       val resultF = auditing.onHandlerNotFound(new DummyRequestHeader())
       awaitResult(resultF)
@@ -132,7 +135,7 @@ class ErrorAuditingSettingsSpec extends WordSpecLike with Matchers with FutureVa
 
     "send ServerValidationError event to DataStream" in {
       val mockConnector = createMockConnector
-      val auditing = new TestErrorAuditing(mockConnector)
+      val auditing      = new TestErrorAuditing(mockConnector)
 
       val resultF = auditing.onBadRequest(new DummyRequestHeader(), "error message")
       awaitResult(resultF)
@@ -142,7 +145,7 @@ class ErrorAuditingSettingsSpec extends WordSpecLike with Matchers with FutureVa
 
     "chain onBadRequest call to parent" in {
       val mockConnector = createMockConnector
-      val auditing = new TestErrorAuditing(mockConnector)
+      val auditing      = new TestErrorAuditing(mockConnector)
 
       val resultF = auditing.onBadRequest(new DummyRequestHeader(), "error message")
       awaitResult(resultF)
@@ -152,7 +155,7 @@ class ErrorAuditingSettingsSpec extends WordSpecLike with Matchers with FutureVa
 
   def createMockConnector: AuditConnector = {
     val connector = mock[AuditConnector]
-    when(connector.sendEvent(any[DataEvent])).thenReturn(Future {Success})
+    when(connector.sendEvent(any[DataEvent])).thenReturn(Future { Success })
     connector
   }
 

@@ -34,7 +34,13 @@ import uk.gov.hmrc.play.microservice.filters.{AuditFilter, LoggingFilter}
 
 import scala.concurrent.ExecutionContext
 
-class DefaultMicroserviceGlobalSpec extends WordSpecLike with Matchers with ScalaFutures with MockitoSugar with OneAppPerSuite with BeforeAndAfterEach {
+class DefaultMicroserviceGlobalSpec
+    extends WordSpecLike
+    with Matchers
+    with ScalaFutures
+    with MockitoSugar
+    with OneAppPerSuite
+    with BeforeAndAfterEach {
 
   val requestHeader: RequestHeader = mock[RequestHeader]
 
@@ -60,12 +66,12 @@ class DefaultMicroserviceGlobalSpec extends WordSpecLike with Matchers with Scal
 
     "send an event to DataStream and return 404 status code for a NotFoundException" in {
       val restGlobal = new TestRestGlobal()
-      val resultF = restGlobal.onError(requestHeader, new NotFoundException("test")).futureValue
+      val resultF    = restGlobal.onError(requestHeader, new NotFoundException("test")).futureValue
 
       val event = verifyAndRetrieveEvent(restGlobal.auditConnector)
 
       resultF.header.status shouldBe 404
-      event.auditType shouldBe EventTypes.ResourceNotFound
+      event.auditType       shouldBe EventTypes.ResourceNotFound
     }
   }
 
@@ -74,12 +80,12 @@ class DefaultMicroserviceGlobalSpec extends WordSpecLike with Matchers with Scal
     "send ResourceNotFound event to DataStream" in {
 
       val restGlobal = new TestRestGlobal()
-      val resultF = restGlobal.onHandlerNotFound(requestHeader).futureValue
+      val resultF    = restGlobal.onHandlerNotFound(requestHeader).futureValue
 
       val event = verifyAndRetrieveEvent(restGlobal.auditConnector)
 
       resultF.header.status shouldBe 404
-      event.auditType shouldBe EventTypes.ResourceNotFound
+      event.auditType       shouldBe EventTypes.ResourceNotFound
     }
   }
 
@@ -88,12 +94,12 @@ class DefaultMicroserviceGlobalSpec extends WordSpecLike with Matchers with Scal
     "send ServerValidationError event to DataStream" in {
 
       val restGlobal = new TestRestGlobal()
-      val resultF = restGlobal.onBadRequest(requestHeader, "error").futureValue
+      val resultF    = restGlobal.onBadRequest(requestHeader, "error").futureValue
 
       val event = verifyAndRetrieveEvent(restGlobal.auditConnector)
 
       resultF.header.status shouldBe 400
-      event.auditType shouldBe EventTypes.ServerValidationError
+      event.auditType       shouldBe EventTypes.ServerValidationError
     }
   }
 

@@ -32,15 +32,14 @@ class NoCacheFilterSpec extends WordSpecLike with Matchers with MockitoSugar wit
 
   private trait Setup extends Results {
     def action(headers: (String, String)*) = {
-      val mockAction = mock[(RequestHeader) => Future[Result]]
-      val outgoingResponse = Future.successful(Ok.withHeaders(headers:_*))
+      val mockAction       = mock[(RequestHeader) => Future[Result]]
+      val outgoingResponse = Future.successful(Ok.withHeaders(headers: _*))
       when(mockAction.apply(any())).thenReturn(outgoingResponse)
       mockAction
     }
 
-    def getResult(headers: (String, String)*) = {
-      NoCacheFilter(action(headers:_*))(FakeRequest()).futureValue
-    }
+    def getResult(headers: (String, String)*) =
+      NoCacheFilter(action(headers: _*))(FakeRequest()).futureValue
   }
 
   "During result post-processing, the filter" should {
@@ -57,10 +56,10 @@ class NoCacheFilterSpec extends WordSpecLike with Matchers with MockitoSugar wit
       val otherHeaders = Seq(
         "header1" -> "value1",
         "header2" -> "value2"
-        )
+      )
       val expHeaders = otherHeaders :+ CommonHeaders.NoCacheHeader
 
-      getResult(otherHeaders:_*) should be(Ok.withHeaders(expHeaders:_*))
+      getResult(otherHeaders: _*) should be(Ok.withHeaders(expHeaders: _*))
     }
 
     "Change cache-control to no-cache, preserving other headers" in new Setup {
@@ -72,7 +71,7 @@ class NoCacheFilterSpec extends WordSpecLike with Matchers with MockitoSugar wit
       val oldHeaders = headers :+ (HeaderNames.CACHE_CONTROL -> "max-age:765")
       val newHeaders = headers :+ CommonHeaders.NoCacheHeader
 
-      getResult(oldHeaders:_*) should be(Ok.withHeaders(newHeaders:_*))
+      getResult(oldHeaders: _*) should be(Ok.withHeaders(newHeaders: _*))
     }
   }
 }

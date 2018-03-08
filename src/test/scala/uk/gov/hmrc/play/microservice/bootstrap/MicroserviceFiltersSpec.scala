@@ -33,9 +33,9 @@ class MicroserviceFiltersSpec extends WordSpecLike with Matchers with MockitoSug
     "include authFilter if defined" in running(new GuiceApplicationBuilder().bindings(new PlayModule).build()) {
 
       val filters = new MicroserviceFilters {
-        override def loggingFilter: LoggingFilter = mock[LoggingFilter]
+        override def loggingFilter: LoggingFilter         = mock[LoggingFilter]
         override def microserviceAuditFilter: AuditFilter = mock[AuditFilter]
-        override def authFilter: Option[EssentialFilter] = Some(mock[EssentialFilter])
+        override def authFilter: Option[EssentialFilter]  = Some(mock[EssentialFilter])
       }
 
       filters.microserviceFilters.size shouldBe 6
@@ -45,9 +45,9 @@ class MicroserviceFiltersSpec extends WordSpecLike with Matchers with MockitoSug
     "not include authFilter if not defined" in running(new GuiceApplicationBuilder().bindings(new PlayModule).build()) {
 
       val filters = new MicroserviceFilters {
-        override def loggingFilter: LoggingFilter = mock[LoggingFilter]
+        override def loggingFilter: LoggingFilter         = mock[LoggingFilter]
         override def microserviceAuditFilter: AuditFilter = mock[AuditFilter]
-        override def authFilter: Option[EssentialFilter] = None
+        override def authFilter: Option[EssentialFilter]  = None
       }
 
       filters.microserviceFilters.size shouldBe 5

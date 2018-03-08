@@ -26,11 +26,11 @@ import scala.concurrent.Future
 
 object EventTypes {
 
-  val RequestReceived: String = "RequestReceived"
+  val RequestReceived: String          = "RequestReceived"
   val TransactionFailureReason: String = "transactionFailureReason"
-  val ServerInternalError: String = "ServerInternalError"
-  val ResourceNotFound: String = "ResourceNotFound"
-  val ServerValidationError: String = "ServerValidationError"
+  val ServerInternalError: String      = "ServerInternalError"
+  val ResourceNotFound: String         = "ResourceNotFound"
+  val ServerValidationError: String    = "ServerValidationError"
 }
 
 trait ErrorAuditingSettings extends GlobalSettings with HttpAuditEvent {
@@ -39,32 +39,40 @@ trait ErrorAuditingSettings extends GlobalSettings with HttpAuditEvent {
 
   def auditConnector: AuditConnector
 
-
   private val unexpectedError = "Unexpected error"
-  private val notFoundError = "Resource Endpoint Not Found"
+  private val notFoundError   = "Resource Endpoint Not Found"
   private val badRequestError = "Request bad format exception"
 
   override def onError(request: RequestHeader, ex: Throwable): Future[Result] = {
-    implicit val hc:HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier =
+      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
     val code = ex match {
-      case e: NotFoundException => ResourceNotFound
+      case e: NotFoundException           => ResourceNotFound
       case jsError: JsValidationException => ServerValidationError
-      case _ => ServerInternalError
+      case _                              => ServerInternalError
     }
 
-    auditConnector.sendEvent(dataEvent(code, unexpectedError, request, Map(TransactionFailureReason -> ex.getMessage))(HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))))
+    auditConnector.sendEvent(
+      dataEvent(code, unexpectedError, request, Map(TransactionFailureReason -> ex.getMessage))(
+        HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))))
     super.onError(request, ex)
   }
 
   override def onHandlerNotFound(request: RequestHeader): Future[Result] = {
-    implicit val hc:HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-    auditConnector.sendEvent(dataEvent(ResourceNotFound, notFoundError, request)(HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))))
+    implicit val hc: HeaderCarrier =
+      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    auditConnector.sendEvent(
+      dataEvent(ResourceNotFound, notFoundError, request)(
+        HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))))
     super.onHandlerNotFound(request)
   }
 
   override def onBadRequest(request: RequestHeader, error: String): Future[Result] = {
-    implicit val hc:HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-    auditConnector.sendEvent(dataEvent(ServerValidationError, badRequestError, request)(HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))))
+    implicit val hc: HeaderCarrier =
+      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    auditConnector.sendEvent(
+      dataEvent(ServerValidationError, badRequestError, request)(
+        HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))))
     super.onBadRequest(request, error)
   }
 }

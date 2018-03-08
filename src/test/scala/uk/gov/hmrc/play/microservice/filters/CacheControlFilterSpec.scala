@@ -43,7 +43,7 @@ class CacheControlFilterSpec extends WordSpecLike with Matchers with MockitoSuga
     }
 
     lazy val action = {
-      val mockAction = mock[(RequestHeader) => Future[Result]]
+      val mockAction       = mock[(RequestHeader) => Future[Result]]
       val outgoingResponse = Future.successful(resultFromAction)
       when(mockAction.apply(any())).thenReturn(outgoingResponse)
       mockAction
@@ -67,12 +67,14 @@ class CacheControlFilterSpec extends WordSpecLike with Matchers with MockitoSuga
   "During result post-processing, the filter" should {
 
     "add a cache-control header if there isn't one and the response has no content type" in new Setup {
-      cacheControlFilter(action)(FakeRequest()).futureValue should be(resultFromAction.withHeaders(expectedCacheControlHeader))
+      cacheControlFilter(action)(FakeRequest()).futureValue should be(
+        resultFromAction.withHeaders(expectedCacheControlHeader))
     }
 
     "add a cache-control header if there isn't one and the response does not have an excluded content type" in new Setup {
       override val resultFromAction: Result = Ok.as("text/html")
-      cacheControlFilter(action)(FakeRequest()).futureValue should be(resultFromAction.withHeaders(expectedCacheControlHeader))
+      cacheControlFilter(action)(FakeRequest()).futureValue should be(
+        resultFromAction.withHeaders(expectedCacheControlHeader))
     }
 
     "not add a cache-control header if there isn't one but the response is an exact match for an excluded content type" in new Setup {
@@ -97,21 +99,22 @@ class CacheControlFilterSpec extends WordSpecLike with Matchers with MockitoSuga
 
     "replace any existing cache-control header" in new Setup {
       override val resultFromAction = Ok.withHeaders(HeaderNames.CACHE_CONTROL -> "someOtherValue")
-      cacheControlFilter(action)(FakeRequest()).futureValue should be(resultFromAction.withHeaders(expectedCacheControlHeader))
+      cacheControlFilter(action)(FakeRequest()).futureValue should be(
+        resultFromAction.withHeaders(expectedCacheControlHeader))
     }
 
     "leave any other headers alone" in new Setup {
-      override val resultFromAction = Ok.withHeaders(
-        "header1" -> "value1",
-        HeaderNames.CACHE_CONTROL -> "someOtherValue",
-        "header2" -> "value2")
+      override val resultFromAction =
+        Ok.withHeaders("header1" -> "value1", HeaderNames.CACHE_CONTROL -> "someOtherValue", "header2" -> "value2")
 
-      cacheControlFilter(action)(FakeRequest()).futureValue should be(resultFromAction.withHeaders(expectedCacheControlHeader))
+      cacheControlFilter(action)(FakeRequest()).futureValue should be(
+        resultFromAction.withHeaders(expectedCacheControlHeader))
     }
   }
 
   "Creating the filter from config" should {
-    "load the correct values" in new WithApplication(new GuiceApplicationBuilder().configure("caching" -> List("image/", "text/")).build()) {
+    "load the correct values" in new WithApplication(
+      new GuiceApplicationBuilder().configure("caching" -> List("image/", "text/")).build()) {
       CacheControlFilter.fromConfig("caching").cachableContentTypes should be(List("image/", "text/"))
     }
   }

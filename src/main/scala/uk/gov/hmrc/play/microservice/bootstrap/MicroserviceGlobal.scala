@@ -35,26 +35,27 @@ trait MicroserviceFilters extends MicroserviceFilterSupport {
 
   def authFilter: Option[EssentialFilter]
 
-  protected def defaultMicroserviceFilters: Seq[EssentialFilter] = Seq(
-    Some(metricsFilter),
-    Some(microserviceAuditFilter),
-    Some(loggingFilter),
-    authFilter,
-    Some(NoCacheFilter),
-    Some(RecoveryFilter)).flatten
+  protected def defaultMicroserviceFilters: Seq[EssentialFilter] =
+    Seq(
+      Some(metricsFilter),
+      Some(microserviceAuditFilter),
+      Some(loggingFilter),
+      authFilter,
+      Some(NoCacheFilter),
+      Some(RecoveryFilter)).flatten
 
   def microserviceFilters: Seq[EssentialFilter] = defaultMicroserviceFilters
 }
 
 abstract class DefaultMicroserviceGlobal
-  extends GlobalSettings
-  with MicroserviceFilters
-  with GraphiteConfig
-  with RemovingOfTrailingSlashes
-  with JsonErrorHandling
-  with ErrorAuditingSettings {
+    extends GlobalSettings
+    with MicroserviceFilters
+    with GraphiteConfig
+    with RemovingOfTrailingSlashes
+    with JsonErrorHandling
+    with ErrorAuditingSettings {
 
-  lazy val appName = Play.current.configuration.getString("appName").getOrElse("APP NAME NOT SET")
+  lazy val appName                          = Play.current.configuration.getString("appName").getOrElse("APP NAME NOT SET")
   lazy val loggerDateFormat: Option[String] = Play.current.configuration.getString("logger.json.dateformat")
 
   override def onStart(app: Application) {
@@ -64,8 +65,7 @@ abstract class DefaultMicroserviceGlobal
     super.onStart(app)
   }
 
-  override def doFilter(a: EssentialAction): EssentialAction = {
+  override def doFilter(a: EssentialAction): EssentialAction =
     Filters(super.doFilter(a), microserviceFilters: _*)
-  }
 
 }

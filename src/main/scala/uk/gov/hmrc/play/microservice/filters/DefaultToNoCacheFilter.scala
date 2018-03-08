@@ -28,12 +28,11 @@ import scala.concurrent.Future
   */
 object DefaultToNoCacheFilter extends Filter with MicroserviceFilterSupport {
 
-  def apply(next: (RequestHeader) => Future[Result])(rh: RequestHeader): Future[Result] = {
+  def apply(next: (RequestHeader) => Future[Result])(rh: RequestHeader): Future[Result] =
     next(rh).map { r =>
       r.header.headers.get(HeaderNames.CACHE_CONTROL) match {
         case Some(_) => r
-        case _ => r.withHeaders(CommonHeaders.NoCacheHeader)
+        case _       => r.withHeaders(CommonHeaders.NoCacheHeader)
       }
     }
-  }
 }

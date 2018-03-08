@@ -30,27 +30,24 @@ class RecoveryFilterSpec extends WordSpecLike with Matchers with ScalaFutures {
   "The RecoveryFilter" should {
 
     "recover failed actions with 404 status codes" in new WithApplication {
-      val action: EssentialAction = EssentialAction {
-        request =>
-          Action.async(Future.failed(new NotFoundException("Not found exception")))(request)
+      val action: EssentialAction = EssentialAction { request =>
+        Action.async(Future.failed(new NotFoundException("Not found exception")))(request)
       }
       val fResult = RecoveryFilter(action)(new DummyRequestHeader).run.futureValue
       fResult.header.status shouldBe 404
     }
 
     "do nothing for actions failed with other status codes" in new WithApplication {
-      val action: EssentialAction = EssentialAction {
-        request =>
-          Action.async(Future.failed(new HttpException("Internal server error", 500)))(request)
+      val action: EssentialAction = EssentialAction { request =>
+        Action.async(Future.failed(new HttpException("Internal server error", 500)))(request)
       }
       val fResult = RecoveryFilter(action)(new DummyRequestHeader).run
       whenReady(fResult.failed) { ex =>
-        ex shouldBe a [HttpException]
+        ex shouldBe a[HttpException]
       }
     }
   }
 }
-
 
 class DummyRequestHeader extends RequestHeader {
 

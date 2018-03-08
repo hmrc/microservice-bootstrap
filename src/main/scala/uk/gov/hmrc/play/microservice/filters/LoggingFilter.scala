@@ -31,7 +31,8 @@ import scala.concurrent.Future
 
 trait FrontendLoggingFilter extends LoggingFilter {
 
-  override def buildLoggedHeaders(request: RequestHeader) = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+  override def buildLoggedHeaders(request: RequestHeader) =
+    HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
 }
 
@@ -40,13 +41,14 @@ trait LoggingFilter extends Filter {
 
   def controllerNeedsLogging(controllerName: String): Boolean
 
-  protected def logger:LoggerLike = Logger
+  protected def logger: LoggerLike = Logger
 
-  def buildLoggedHeaders(request: RequestHeader): HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers)
+  def buildLoggedHeaders(request: RequestHeader): HeaderCarrier =
+    HeaderCarrierConverter.fromHeadersAndSession(request.headers)
 
   def apply(next: (RequestHeader) => Future[Result])(rh: RequestHeader): Future[Result] = {
     implicit val hc = buildLoggedHeaders(rh)
-    val startTime = DateTimeUtils.currentTimeMillis()
+    val startTime   = DateTimeUtils.currentTimeMillis()
 
     val result = next(rh)
 
@@ -55,21 +57,23 @@ trait LoggingFilter extends Filter {
     result
   }
 
-  private def needsLogging(request: RequestHeader): Boolean = {
+  private def needsLogging(request: RequestHeader): Boolean =
     (for {
       name <- request.tags.get(play.routing.Router.Tags.ROUTE_CONTROLLER)
     } yield controllerNeedsLogging(name)).getOrElse(true)
-  }
 
-  private def logString(rh: RequestHeader, result: Future[Result], startTime: Long)(implicit ld: LoggingDetails): Future[String] = {
-    val start = dateFormat.format(new Date(startTime))
+  private def logString(rh: RequestHeader, result: Future[Result], startTime: Long)(
+    implicit ld: LoggingDetails): Future[String] = {
+    val start       = dateFormat.format(new Date(startTime))
     def elapsedTime = DateTimeUtils.currentTimeMillis() - startTime
 
-    result.map {
-      result => s"${ld.requestChain.value} $start ${rh.method} ${rh.uri} ${result.header.status} ${elapsedTime}ms"
-    }.recover {
-      case t => s"${ld.requestChain.value} $start ${rh.method} ${rh.uri} ${t} ${elapsedTime}ms"
-    }
+    result
+      .map { result =>
+        s"${ld.requestChain.value} $start ${rh.method} ${rh.uri} ${result.header.status} ${elapsedTime}ms"
+      }
+      .recover {
+        case t => s"${ld.requestChain.value} $start ${rh.method} ${rh.uri} $t ${elapsedTime}ms"
+      }
 
   }
 }

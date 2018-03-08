@@ -25,7 +25,11 @@ import uk.gov.hmrc.http.{HttpException, Upstream4xxResponse, Upstream5xxResponse
 
 import scala.concurrent.Future
 
-case class ErrorResponse(statusCode: Int, message: String, xStatusCode: Option[String] = None, requested: Option[String] = None)
+case class ErrorResponse(
+  statusCode: Int,
+  message: String,
+  xStatusCode: Option[String] = None,
+  requested: Option[String]   = None)
 
 trait JsonErrorHandling extends GlobalSettings {
 
@@ -48,17 +52,15 @@ trait JsonErrorHandling extends GlobalSettings {
     new Status(errorResponse.statusCode)(Json.toJson(errorResponse))
   }
 
-  override def onHandlerNotFound(request: RequestHeader) = {
+  override def onHandlerNotFound(request: RequestHeader) =
     Future.successful {
       val er = ErrorResponse(NOT_FOUND, "URI not found", requested = Some(request.path))
       NotFound(Json.toJson(er))
     }
-  }
 
-  override def onBadRequest(request: RequestHeader, error: String) = {
+  override def onBadRequest(request: RequestHeader, error: String) =
     Future.successful {
       val er = ErrorResponse(BAD_REQUEST, error)
       BadRequest(Json.toJson(er))
     }
-  }
 }

@@ -28,19 +28,23 @@ import play.api.test._
 
 import scala.concurrent.Future
 
-class DefaultToNoCacheFilterSpec extends WordSpecLike with Matchers with MockitoSugar with ScalaFutures with OneAppPerTest {
+class DefaultToNoCacheFilterSpec
+    extends WordSpecLike
+    with Matchers
+    with MockitoSugar
+    with ScalaFutures
+    with OneAppPerTest {
 
   private trait Setup extends Results {
     def action(headers: (String, String)*) = {
-      val mockAction = mock[(RequestHeader) => Future[Result]]
-      val outgoingResponse = Future.successful(Ok.withHeaders(headers:_*))
+      val mockAction       = mock[(RequestHeader) => Future[Result]]
+      val outgoingResponse = Future.successful(Ok.withHeaders(headers: _*))
       when(mockAction.apply(any())).thenReturn(outgoingResponse)
       mockAction
     }
 
-    def getResult(headers: (String, String)*) = {
-      DefaultToNoCacheFilter(action(headers:_*))(FakeRequest()).futureValue
-    }
+    def getResult(headers: (String, String)*) =
+      DefaultToNoCacheFilter(action(headers: _*))(FakeRequest()).futureValue
   }
 
   "During result post-processing, the filter" should {
@@ -50,27 +54,28 @@ class DefaultToNoCacheFilterSpec extends WordSpecLike with Matchers with Mockito
     }
 
     "preserve the cache-control header if there is one" in new Setup {
-      getResult(HeaderNames.CACHE_CONTROL -> "max-age=300") should be(Ok.withHeaders(HeaderNames.CACHE_CONTROL -> "max-age=300"))
+      getResult(HeaderNames.CACHE_CONTROL -> "max-age=300") should be(
+        Ok.withHeaders(HeaderNames.CACHE_CONTROL -> "max-age=300"))
     }
 
     "leave any other headers alone adding No Cache" in new Setup {
       val otherHeaders = Seq(
         "header1" -> "value1",
         "header2" -> "value2"
-        )
+      )
       val expHeaders = otherHeaders :+ CommonHeaders.NoCacheHeader
 
-      getResult(otherHeaders:_*) should be(Ok.withHeaders(expHeaders:_*))
+      getResult(otherHeaders: _*) should be(Ok.withHeaders(expHeaders: _*))
     }
 
     "preserve all headers" in new Setup {
       val headers = Seq(
-        "header1" -> "value1",
+        "header1"                 -> "value1",
         HeaderNames.CACHE_CONTROL -> "max-age:765",
-        "header2" -> "value2"
+        "header2"                 -> "value2"
       )
 
-      getResult(headers:_*) should be(Ok.withHeaders(headers:_*))
+      getResult(headers: _*) should be(Ok.withHeaders(headers: _*))
     }
   }
 }

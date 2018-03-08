@@ -26,9 +26,8 @@ import uk.gov.hmrc.http.HttpException
 object RecoveryFilter extends EssentialFilter with Results {
 
   override def apply(next: EssentialAction): EssentialAction = new EssentialAction {
-    def apply(rh: RequestHeader): Accumulator[ByteString, Result] = {
+    def apply(rh: RequestHeader): Accumulator[ByteString, Result] =
       next(rh).recover(recoverErrors)
-    }
   }
 
   def recoverErrors: PartialFunction[Throwable, Result] = {

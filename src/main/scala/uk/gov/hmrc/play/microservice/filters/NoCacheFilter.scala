@@ -25,10 +25,8 @@ import scala.concurrent.Future
   * This filter adds Cache-Control: no-cache,no-store,max-age=0 headers
   * to all responses overriding any existing Cache-Control headers.
   */
-
 object NoCacheFilter extends Filter with MicroserviceFilterSupport {
 
-  def apply(next: (RequestHeader) => Future[Result])(rh: RequestHeader): Future[Result] = {
+  def apply(next: (RequestHeader) => Future[Result])(rh: RequestHeader): Future[Result] =
     next(rh).map(_.withHeaders(CommonHeaders.NoCacheHeader))
-  }
 }
