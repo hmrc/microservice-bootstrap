@@ -45,10 +45,11 @@ object LoadAuditingConfig {
                   .getOrElse(throw new Exception("Missing consumer baseUri for auditing"))
               )
             }
-            .getOrElse(throw new Exception("Missing consumer configuration for auditing")))
+            .getOrElse(throw new Exception("Missing consumer configuration for auditing"))),
+          auditSource = Play.configuration.getString("appName").getOrElse(throw new Exception("Missing app name needed for auditSource"))
         )
       } else {
-        AuditingConfig(consumer = None, enabled = false)
+        AuditingConfig(consumer = None, enabled = false, auditSource = "auditing disabled")
       }
 
     }
