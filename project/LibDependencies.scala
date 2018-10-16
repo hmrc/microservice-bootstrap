@@ -1,35 +1,8 @@
 import play.core.PlayVersion
-import sbt.Keys._
+import play.sbt.PlayImport.filters
 import sbt._
 
-object HmrcBuild extends Build {
-
-  import uk.gov.hmrc.SbtAutoBuildPlugin
-  import uk.gov.hmrc.versioning.SbtGitVersioning
-
-  val appName = "microservice-bootstrap"
-
-  val appDependencies = Dependencies.compile ++ Dependencies.test
-
-  lazy val library = Project(appName, file("."))
-    .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning)
-    .settings(
-      scalaVersion := "2.11.11",
-      libraryDependencies ++= appDependencies,
-      crossScalaVersions := Seq("2.11.11"),
-      resolvers := Seq(
-        Resolver.bintrayRepo("hmrc", "releases"),
-        Resolver.typesafeRepo("releases"),
-        Resolver.jcenterRepo
-      )
-    )
-    .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
-
-}
-
-object Dependencies {
-
-  import play.sbt.PlayImport._
+object LibDependencies {
 
   val compile = Seq(
     filters,
@@ -61,5 +34,4 @@ object Dependencies {
     "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1"             % "test",
     "uk.gov.hmrc"            %% "hmrctest"           % "2.3.0"             % "test"
   )
-
 }
