@@ -9,7 +9,7 @@ object LibDependencies {
     "uk.gov.hmrc"                    %% "crypto"                 % "4.5.0",
     "uk.gov.hmrc"                    %% "http-verbs"             % "7.3.0",
     "uk.gov.hmrc"                    %% "http-verbs-play-25"     % "0.12.0",
-    "uk.gov.hmrc"                    %% "play-auditing"          % "3.9.0-play-25",
+    "uk.gov.hmrc"                    %% "play-auditing"          % "3.12.0-play-25",
     "uk.gov.hmrc"                    %% "play-graphite"          % "3.6.2",
     "uk.gov.hmrc"                    %% "play-config"            % "4.3.3",
     "uk.gov.hmrc"                    %% "play-authorisation"     % "5.1.0",
