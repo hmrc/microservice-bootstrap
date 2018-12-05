@@ -11,7 +11,7 @@ object LibDependencies {
     "com.typesafe.akka"              %% "akka-actor"             % akkaVersion,
     "com.typesafe.akka"              %% "akka-stream"            % akkaVersion,
     "com.typesafe.akka"              %% "akka-slf4j"             % akkaVersion,
-    "uk.gov.hmrc"                    %% "crypto"                 % "4.5.0",
+    "uk.gov.hmrc"                    %% "crypto"                 % "5.1.0",
     "uk.gov.hmrc"                    %% "http-verbs"             % "8.10.0-play-25",
     "uk.gov.hmrc"                    %% "play-auditing"          % "3.14.0-play-25",
     "uk.gov.hmrc"                    %% "play-graphite"          % "4.4.0",
