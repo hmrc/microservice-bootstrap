@@ -3,7 +3,7 @@
   lazy val library = Project(appName, file("."))
     .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning, SbtArtifactory)
     .settings(
-      majorVersion := 9,
+      majorVersion := 10,
       scalaVersion := "2.11.12",
       makePublicallyAvailableOnBintray := true,
       libraryDependencies ++= LibDependencies.compile ++ LibDependencies.test,
