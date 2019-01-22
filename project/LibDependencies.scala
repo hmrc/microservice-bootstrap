@@ -17,7 +17,7 @@ object LibDependencies {
     "uk.gov.hmrc"        %% "play-graphite"       % "4.4.0",
     "uk.gov.hmrc"        %% "play-config"         % "7.2.0",
     "uk.gov.hmrc"        %% "play-authorisation"  % "5.1.0",
-    "uk.gov.hmrc"        %% "play-health"         % "3.9.0-play-25",
+    "uk.gov.hmrc"        %% "play-health"         % "3.10.0-play-25",
     "ch.qos.logback"     % "logback-classic"      % "1.2.3",
     "uk.gov.hmrc"        %% "logback-json-logger" % "4.1.0",
     "com.typesafe.play"  %% "play"                % PlayVersion.current,
