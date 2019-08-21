@@ -17,11 +17,11 @@
 package uk.gov.hmrc.play.microservice.bootstrap
 
 import play.api.http.Status._
-import play.api.libs.json.Json
-import play.api.mvc.{RequestHeader, Result}
+import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.Results._
+import play.api.mvc.{RequestHeader, Result}
 import play.api.{GlobalSettings, Logger}
-import uk.gov.hmrc.http.{HttpException, Upstream4xxResponse, Upstream5xxResponse}
+import uk.gov.hmrc.http.{HttpException, UpstreamErrorResponse}
 
 import scala.concurrent.Future
 
@@ -33,34 +33,43 @@ case class ErrorResponse(
 
 trait JsonErrorHandling extends GlobalSettings {
 
-  implicit val erFormats = Json.format[ErrorResponse]
+  implicit val erFormats: OFormat[ErrorResponse] = Json.format[ErrorResponse]
+  val upstreamWarnStatuses: Seq[Int] = Nil
 
-  override def onError(request: RequestHeader, ex: Throwable) = {
+  override def onError(request: RequestHeader, ex: Throwable): Future[Result] = {
     val message = s"! Internal server error, for (${request.method}) [${request.uri}] -> "
-    Logger.error(message, ex)
-    Future.successful(resolveError(ex))
-  }
-
-  private def resolveError(ex: Throwable): Result = {
     val errorResponse = ex match {
-      case e: HttpException       => ErrorResponse(e.responseCode, e.getMessage)
-      case e: Upstream4xxResponse => ErrorResponse(e.reportAs, e.getMessage)
-      case e: Upstream5xxResponse => ErrorResponse(e.reportAs, e.getMessage)
-      case e: Throwable           => ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage)
+      case e: HttpException =>
+        logException(e, e.responseCode)
+        ErrorResponse(e.responseCode, e.getMessage)
+      case e: Exception with UpstreamErrorResponse =>
+        logException(e, e.upstreamResponseCode)
+        ErrorResponse(e.reportAs, e.getMessage)
+      case e: Throwable =>
+        Logger.error(message, ex)
+        ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage)
     }
 
-    new Status(errorResponse.statusCode)(Json.toJson(errorResponse))
+    val result = new Status(errorResponse.statusCode)(Json.toJson(errorResponse))
+    Future.successful(result)
   }
 
-  override def onHandlerNotFound(request: RequestHeader) =
+  override def onHandlerNotFound(request: RequestHeader): Future[Result] =
     Future.successful {
       val er = ErrorResponse(NOT_FOUND, "URI not found", requested = Some(request.path))
       NotFound(Json.toJson(er))
     }
 
-  override def onBadRequest(request: RequestHeader, error: String) =
+  override def onBadRequest(request: RequestHeader, error: String): Future[Result] =
     Future.successful {
       val er = ErrorResponse(BAD_REQUEST, error)
       BadRequest(Json.toJson(er))
     }
+
+  private def logException(exception: Exception, responseCode: Int): Unit = {
+    if(upstreamWarnStatuses contains responseCode)
+      Logger.warn(exception.getMessage, exception)
+    else
+      Logger.error(exception.getMessage, exception)
+  }
 }
