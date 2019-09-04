@@ -13,7 +13,7 @@ object LibDependencies {
     "com.typesafe.akka"  %% "akka-slf4j"          % akkaVersion,
     "uk.gov.hmrc"        %% "crypto"              % "5.2.0",
     "uk.gov.hmrc"        %% "http-verbs"          % "9.4.0-play-25",
-    "uk.gov.hmrc"        %% "play-auditing"       % "4.1.0-play-25",
+    "uk.gov.hmrc"        %% "play-auditing"       % "4.2.0-play-25",
     "uk.gov.hmrc"        %% "play-graphite"       % "4.5.0",
     "uk.gov.hmrc"        %% "play-config"         % "7.3.0",
     "uk.gov.hmrc"        %% "play-authorisation"  % "5.2.0",
