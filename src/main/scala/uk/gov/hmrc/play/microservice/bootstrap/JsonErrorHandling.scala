@@ -33,8 +33,16 @@ case class ErrorResponse(
 
 trait JsonErrorHandling extends GlobalSettings {
 
+  /**
+   * `upstreamWarnStatuses` is used to determine the log level for exceptions
+   * relating to a HttpResponse. You can override the Seq to define which
+   * response codes should log at a warning level rather an error level.
+   *
+   * This is used to reduce the number of noise the number of duplicated alerts
+   * for a microservice.
+   */
+  protected val upstreamWarnStatuses: Seq[Int] = Nil
   implicit val erFormats: OFormat[ErrorResponse] = Json.format[ErrorResponse]
-  val upstreamWarnStatuses: Seq[Int] = Nil
 
   override def onError(request: RequestHeader, ex: Throwable): Future[Result] = {
     val message = s"! Internal server error, for (${request.method}) [${request.uri}] -> "
