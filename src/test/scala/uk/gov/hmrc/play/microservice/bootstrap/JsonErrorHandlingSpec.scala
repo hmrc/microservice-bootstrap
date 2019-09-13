@@ -22,11 +22,11 @@ import ch.qos.logback.classic.Level
 import org.mockito.Mockito._
 import org.scalatest.LoneElement
 import org.scalatest.concurrent.{Eventually, ScalaFutures}
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.mvc.RequestHeader
 import play.api.{GlobalSettings, Logger}
-import uk.gov.hmrc.http.{BadRequestException, NotFoundException, UnauthorizedException}
+import uk.gov.hmrc.http.{BadRequestException, NotFoundException, UnauthorizedException, Upstream5xxResponse}
 import uk.gov.hmrc.play.test.{LogCapturing, UnitSpec}
 
 trait MaterializerSupport {
@@ -82,8 +82,43 @@ class JsonErrorHandlingSpec
 
         eventually {
           val event = logEvents.loneElement
-          event.getLevel   shouldBe Level.ERROR
+          event.getLevel shouldBe Level.ERROR
           event.getMessage shouldBe s"! Internal server error, for ($method) [$uri] -> "
+        }
+      }
+    }
+
+    "log a warning for upstream code in the warning list" when {
+      val requestHeader = mock[RequestHeader]
+      "an UpstreamErrorResponse exception occurs" in {
+        val weh = new GlobalSettings with JsonErrorHandling {
+          override val upstreamWarnStatuses: Seq[Int] = Seq(500)
+        }
+
+        withCaptureOfLoggingFrom(Logger) { logEvents =>
+          weh.onError(requestHeader, Upstream5xxResponse("any application exception", 500, 502)).futureValue
+
+          eventually {
+            val event = logEvents.loneElement
+            event.getLevel   shouldBe Level.WARN
+            event.getMessage shouldBe s"any application exception"
+          }
+        }
+      }
+
+      "a HttpException occurs" in {
+        val weh = new GlobalSettings with JsonErrorHandling {
+          override val upstreamWarnStatuses: Seq[Int] = Seq(400)
+        }
+
+        withCaptureOfLoggingFrom(Logger) { logEvents =>
+          weh.onError(requestHeader, new BadRequestException("any application exception")).futureValue
+
+          eventually {
+            val event = logEvents.loneElement
+            event.getLevel   shouldBe Level.WARN
+            event.getMessage shouldBe s"any application exception"
+          }
         }
       }
     }
