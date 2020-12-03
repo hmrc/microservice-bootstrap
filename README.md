@@ -1,7 +1,7 @@
 microservice-bootstrap
 ======================
 
-[![Build Status](https://travis-ci.org/hmrc/microservice-bootstrap.svg)](https://travis-ci.org/hmrc/microservice-bootstrap) [ ![Download](https://api.bintray.com/packages/hmrc/releases/microservice-bootstrap/images/download.svg) ](https://bintray.com/hmrc/releases/microservice-bootstrap/_latestVersion)
+
 
 ## This library is in maintanance mode. We recommend migrating to bootstrap-play-{25,26}.
 
